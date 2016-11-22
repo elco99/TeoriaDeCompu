@@ -1,0 +1,131 @@
+* {
+    -webkit-box-sizing: border-box;
+    -moz-box-sizing: border-box;
+    -ms-box-sizing: border-box;
+    box-sizing: border-box;
+}
+
+body {
+    font: 14px helvetica neue, helvetica, arial, sans-serif;
+    height: 680px;
+    overflow-y: hidden;
+}
+
+#canvas {
+    padding: 0;
+    margin: auto;
+    display: block;
+    width: 800px;
+    height: 600px;
+    position: relative;
+    top: 10px;
+    bottom: 0;
+    left: 0px;
+    right: 0;
+    border: 2px solid #ffffff;
+    background: #666633;
+}
+
+
+#disable_canvas_button {
+    height: 30px;
+    margin-right: 10px;
+}
+
+#enable_canvas_button {
+    height: 2em;
+    padding: 0;
+    margin: auto;
+    display: block;
+    position: relative;
+    top: 4em;
+    bottom: 0;
+    left: 0;
+    right: 0;
+}
+
+.input_text {
+    height: 30px;
+    margin-right: 10px;
+    margin: auto;
+    width: 70%;
+}
+
+
+
+#showDFABtn, #showTMBtn {
+    height: 30px;
+}
+
+div#input_animation {
+    position: fixed;
+    top: 0px;
+    right: 0;
+    font-size: xx-large;
+    color: red;
+    text-align: -webkit-center;
+    display: flex;
+    margin-right: 570px;
+}
+
+.info {
+    color: white;
+}
+
+.title-info {
+    display: -webkit-box;
+    color: white;
+}
+
+table.transitions,
+.transitions th,
+.transitions td {
+    border: 0.5px solid white;
+    color: white;
+    text-align: -webkit-center;
+}
+
+
+
+.content {
+    width: 80%;
+    margin: auto;
+    border: 1px solid white;
+    padding: 20px;
+}
+
+.content-title {
+    text-align: -webkit-center;
+}
+
+.mainDiv {
+    display: inline-block;
+}
+
+.center {
+    text-align: center;
+}
+
+div#stack table,
+div#stack tr,
+div#stack td {
+    border: 1px solid black;
+}
+
+#stack td {
+    width: 40px;
+    height: 40px;
+}
+
+#stack {
+    position: relative;
+    left: 100px;
+}
+
+tr#stack-row {
+    height: 40px;
+}
+
+#input {
+    padding-top: 10px;
+}
