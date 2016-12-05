@@ -1,5 +1,6 @@
 var unitarias = [];
 var complemento = [] ;
+var mis_unitarias= ["A","B","C","D","E","F","G","H","I","J","K","L,","M","N","O","P","Q","R","S","T","U","V","W","X","Y","Z"];
 //var complemento2 = complemento;
 
  Agregar_cfg = function(){
@@ -28,6 +29,10 @@ Conventir_cnf = function(){
   elim_E();
   eliminar_vacio();
   elim_U();
+  eliminar_vacio();
+  cfn_mul();
+  console.log(unitarias);
+  console.log(complemento);
   console.log("termino");
 
 }
@@ -76,6 +81,15 @@ elim_E = function (){
   }
 
 eliminar_vacio = function  () {
+  var str_comple;
+  var str_sin_barra;
+  for (var i = 0; i < complemento.length; i++) {
+    str_comple= complemento[i]
+    str_sin_barra = str_comple.replace(/||/g,"");
+    complemento[i]= str_sin_barra;
+    console.log("entro");
+  }
+
 
   var str_complemento;
   var str_sin_espacio;
@@ -87,6 +101,7 @@ eliminar_vacio = function  () {
   }
 
   console.log(complemento);
+  console.log("salio de limpiar");
 }
 
 
@@ -120,7 +135,7 @@ elim_U = function(){
       }
 
     }
-complemento[i]=remplazo;
+    complemento[i]=remplazo;
   }
 
   complemento[0]=complemento[1]; // al s0 le mete el primero
@@ -129,4 +144,70 @@ complemento[i]=remplazo;
   console.log(unitarias);
   console.log(complemento);
 
+}
+
+cfn_mul =function(){
+
+  for (var i = 0; i < unitarias.length; i++) { //for que recorre las unitarias
+    var a_cambiar="";
+    var a_cambiar2="";
+
+    var cambio="";
+
+    var antigua="";
+
+    var nueva_unitaria="";
+
+    var str_comple= complemento[i];
+
+    var cont_complet_split = str_comple.split("|");
+    for (var k = 0; k < cont_complet_split.length; k++) { // for que recorre los conjuntos del complemento
+      if (cont_complet_split[k].length >= 3) { // valida que tenga 3 o mas
+        console.log(cont_complet_split[k])
+        var avanza=true;
+        var nueva_unitaria="";
+        while (avanza) {
+          var random = Math.floor(Math.random() * mis_unitarias.length);
+          //console.log(random);
+          //console.log(mis_unitarias);
+          nueva_unitaria=mis_unitarias[random];
+
+          var contador=0;
+          for (var w = 0; w < unitarias.length; w++) {
+            if (nueva_unitaria != String(unitarias[w].charAt[0])) {
+              contador++;
+            }
+          }
+          if (contador=== unitarias.length) {
+            avanza=false;
+          }
+        }//valida que la nueva letra no haya sido utilizada
+
+        console.log(nueva_unitaria);
+        antigua= cont_complet_split[k]; // como era el conjunto
+        cambio =cont_complet_split[k].slice(0,2); // saco lo que agregare de complemento
+        a_cambiar = str_comple.replace(cambio,nueva_unitaria); // es lo que me queda de complemento
+        complemento[i]=a_cambiar;
+        //console.log(complemento[i]+ " el complemento como quedo con i=  " +i);
+
+        unitarias.push(nueva_unitaria);// agrego la unitarias
+        complemento.push(cambio); // agrego lo nuevo acomplemento
+      //  console.log("entro al if y agrego nuevo")
+
+        for (var j = i; j < unitarias.length-1; j++) { // for que debe recorrer para encontrar las unitarias
+          var str_comple2= complemento[j];
+          var cont_complet_split2 = str_comple2.split("|");
+          for (var m = 0; m < cont_complet_split2.length; m++) { // recorre los conjuntos
+            if (cont_complet_split2[m].includes(cambio) ) {
+              a_cambiar2 = str_comple2.replace(cambio,nueva_unitaria);
+              complemento[j]=a_cambiar2;
+            }
+          }
+
+        }
+
+      }
+    }
+    console.log("termino el ciclo")
+  }
 }
