@@ -1,4 +1,5 @@
 var epsilon = "\\epsilon"
+var empty_set = "\\phi"
 var max_depth = 0;
 function prueba_cadena(){
     //console.log(this.links[0].nodeB)
@@ -6,7 +7,6 @@ function prueba_cadena(){
 	//console.log(this.nodes) 
     //console.log(this.links);
    // console.log(input)
-   console.log(combinations("123"))
     var StartLink_position = -1;
     var cont =0 ;
     for (var i = 0; i < this.links.length; i++) {
@@ -225,9 +225,158 @@ function construct_tree(input,position_on_input,current_node){
     return tree;
 
 }
-function convertir_nfa_to_dfa(){
+function convert_nfa_to_dfa(){
+    console.log(this.links)
     // primero creamos Q del dfa a partir de los nodos del nfa
-    var Q_dfa = [];
+    var Q_dfa = [];// conjunto de estados de el dfa
+    var alfabeto_dfa = [];//el alfabeto del dfa
+    var q0_nfa; // estado inicial del nfa
+    var q0_dfa; // estado inicial del dfa
+    var F_nfa = []; // estados finales del nfa
+    var backup = {// estructura que contendra el dfa antes de ser dibujado
+        'nodes': [],
+        'links': [],
+    };
+
+    for (var i = 0; i < this.nodes.length; i++) {
+        Q_dfa.push(this.nodes[i].text);
+        if(this.nodes[i].isAcceptState)
+            F_nfa.push(this.nodes[i].text)
+    }
+    Q_dfa = combinations(Q_dfa);
+    Q_dfa.unshift(empty_set);// se le agrega el conjunto vacio al inicio, en este caso representado por phi
+    console.log(Q_dfa)
+
+    // conseguimos el alfabeto del nfa, sin tomar en cuenta epsilon, este sera el alfabeto del dfa y aprovechamos
+    // para conseguir el estado inicial del nfa para luego calcular el del dfa
+    for (var i = 0; i < this.links.length; i++) {
+        var link_text_split = this.links[i].text.split(',')
+        if(this.links[i] instanceof StartLink){// es el inicial
+            q0_nfa = this.links[i].node.text;
+            console.log(q0_nfa)
+        }
+        for (var j = 0; j < link_text_split.length; j++) {
+            if(!contains(alfabeto_dfa,link_text_split[j]) && link_text_split[j] !== epsilon && link_text_split[j] !== ""){
+                alfabeto_dfa.push(link_text_split[j])
+            }
+        }
+    }
+    alfabeto_dfa.sort();
+    console.log(alfabeto_dfa)
+
+    
+
+    var espacio_entre_nodos = 150
+    var x_position = espacio_entre_nodos, y_position = espacio_entre_nodos;// se incrementara cada vez que un nodo se dibuje
+                                                                            //para que no queden montados
+
+    // construimos los nodos de Q_dfa
+    for(var i = 0; i < Q_dfa.length; i++) {
+        var random = Math.floor( (Math.random()*50) );
+        var node = new Node(x_position ,y_position);// random para que los nodos no esten exactamente en el mismo lugar 
+                                                          // en el eje y asi ciertas transiciones no se superposicionan
+                                                          // por que da mucha weba calcular los datos de los links
+        node.text = Q_dfa[i]; 
+        if(x_position + espacio_entre_nodos >=750){
+            x_position = espacio_entre_nodos;
+            y_position +=espacio_entre_nodos;
+            if(y_position >= 550){
+                document.getElementById("canvas").height += 150
+            }
+        }else{
+            x_position += espacio_entre_nodos
+        }
+        // verificamos si el nodo es final
+        if(contains_for_final_states(F_nfa, node.text ))
+            node.isAcceptState = true;
+
+        backup.nodes.push(node);    
+
+    }  
+
+    // construimos los links 
+    var was_empty_set_node_reached = false;
+    for (var i = 0; i < backup.nodes.length; i++) {
+        for (var j = 0; j < alfabeto_dfa.length; j++) {// creamos un link por cada valor en el alfabeto
+            var next_node_name = delta_gorrito(backup.nodes[i].text.split(','),alfabeto_dfa[j]).toString();
+            if(next_node_name === ""){// el link debe ir a el conjunto vacio
+                next_node_name = empty_set                
+            }
+            for (var k = 0; k < backup.nodes.length; k++) {// buscamos la posicion del next_node_name en el arreglo de nodos
+                if(backup.nodes[k].text === next_node_name){
+                    var link;
+                    if(backup.nodes[i].text === next_node_name){// es un selfLink
+                        link = new SelfLink(backup.nodes[i]);
+                        link.anchorAngle = -2.5;//con -2.5 aparece en la parte superior izquierda del nodo donde no estorba
+                        link.text = alfabeto_dfa.toString();
+                    }else{// es un link normal a otro estado
+                        var link = new Link(backup.nodes[i], backup.nodes[k]);
+                        link.perpendicularPart =  0;
+                        link.parallelPart = 0;
+                        
+                        var anchorPoint = calcularAnchorPoint(backup,i,k);
+                        link.setAnchorPoint(anchorPoint.x,anchorPoint.y);
+                    }
+
+                    link.text = alfabeto_dfa[j];
+                    backup.links.push(link)
+                    break;
+
+                }
+            }
+        }
+    }
+
+    // ahora creamos el nodo inicial con su startlink
+    q0_dfa = E(q0_nfa).toString();
+    console.log(q0_nfa);
+    console.log(q0_dfa)
+    for (var i = 0; i < backup.nodes.length; i++) {
+        if(backup.nodes[i].text === q0_dfa){
+            var start_link = new StartLink(backup.nodes[i]);
+            start_link.deltaX = -100; // -100 pixeles de separacion hacia la izquierda con su centro
+            start_link.deltaY = 0;  
+            backup.links.push(start_link)
+        }
+        if(i>0)// ya que el 0 es phi y phi ya representa el conjunto vacio, no son necesarios los {}
+         backup.nodes[i].text = "{"+backup.nodes[i].text+"}"
+        
+    }
+    // por ultimo, si hay varios links saliendo de un estado y entrando al mismo estado los consolidaremos dentro de uno solo
+    // separando cada valor de la transicion por comas
+    for (var i = 0; i < backup.nodes.length; i++) {
+
+        // for (var j = 0; j < alfabeto_dfa.length; j++) {
+
+            for (var j = 0; j < backup.links.length; j++) {
+
+                for (var k = 0; k < backup.links.length; k++) {
+                   if(backup.links[j].node === backup.links[k].node && backup.links[j].nodeA === backup.links[k].nodeA
+                        && backup.links[j].nodeB === backup.links[k].nodeB && j !== k 
+                        && backup.links[j].text !== backup.links[k].text && !(backup.links[k] instanceof StartLink)
+                        && !(backup.links[j] instanceof StartLink)){
+                        console.log(j,k)
+                        //si todas se cumplen tienen los mismos objetivos pero no son el mismo link
+                        //deben tener los mismos nodos y los mismos undefined indpenedientemente del tipo de link
+                        backup.links[j].text +=","+backup.links[k].text
+                        backup.links.splice(k,1)
+                        j = 0;
+                        break;
+                   }
+                }
+                
+            }
+
+        // }
+
+
+    }
+    console.log(backup.links)
+    
+
+    this.nodes = backup.nodes;
+    this.links = backup.links;
+    draw();
 }
 function delta(nodeName, input){
     //recibe el nombre de un nombre y el valor para la transicion y retorna un arreglo con los nombres de los 
@@ -305,16 +454,77 @@ function delta_gorrito(nodeNames, input){
     return array.sort();
 }
 
-function combinations(str) {
-    var result = [];
-    var f = function(prefix, chars) {
-        for (var i = 0; i < chars.length; i++) {
-          result.push(prefix + chars[i]);
-          f(prefix + chars[i], chars.slice(i + 1));
+function calcularAnchorPoint(backup,i,k){
+    //i,k son la posiciones de los nodos izquierdos y derechos respectivamente dentro del arreglo de backup
+    //esta funcion calcula el punto central del link para que luego la libreria se encargue de dibujarlo con la
+    //curvatura del link correspondiente.
+    var nodeAX = backup.nodes[i].x;
+    var nodeBX = backup.nodes[k].x;
+    var nodeAY = backup.nodes[i].y;
+    var nodeBY = backup.nodes[k].y;
+    var anchorPointX = 0;
+    var anchorPointY = 0;
+    if(nodeAX < nodeBX){// si el link sale de izquierda y va a derecha
+
+        if(backup.nodes[i].y === backup.nodes[k].y){
+            anchorPointX = (nodeBX - nodeAX)/2 + nodeAX ;
+            anchorPointY = backup.nodes[i].y + 30
+        }
+        else{
+            if(nodeAY < nodeBY){// nodo a esta mas arriba que b
+
+                anchorPointX = (nodeBX - nodeAX)/2 + nodeAX+10;
+                anchorPointY = (nodeBY - nodeAY)/2 + nodeAY+10;
+
+            }else{//nodo a esta mas abajo que b
+
+                anchorPointX = (nodeBX - nodeAX)/2 + nodeAX-10;
+                anchorPointY = (nodeBY - nodeAY)/2 + nodeAY-10;
+
+            }
+        }
+    }else{//link sale de derecha y va a la izquierda
+        if(backup.nodes[i].y === backup.nodes[k].y){
+            anchorPointX = (nodeAX - nodeBX)/2 + nodeBX 
+            anchorPointY = backup.nodes[i].y - 30
+        }
+        else{
+            if(nodeAY < nodeBY){// nodo a esta mas arriba que b
+
+                anchorPointX = (nodeAX - nodeBX)/2 + nodeBX +10;
+                anchorPointY = (nodeBY - nodeAY)/2 + nodeAY +10;
+
+            }else{//nodo a esta mas abajo que b
+
+                anchorPointX = (nodeAX - nodeBX)/2 + nodeBX -10;
+                anchorPointY = (nodeBY - nodeAY)/2 + nodeAY -10;
+
+            }
+            /*anchorPointX = (nodeAX - nodeBX)/2 + nodeBX
+            anchorPointY = backup.nodes[i].y - 30*/
         }
     }
-    f('', chars);
-    return result;
+    var point = {
+        'x': anchorPointX,
+        'y': anchorPointY
+    }
+    return point;
+
+}
+
+function combinations(str) {
+    var result = [];
+    var f = function(prefix, str) {
+        for (var i = 0; i < str.length; i++) {
+          result.push(prefix + str[i] + ",");
+          f(prefix+ str[i] + "," , str.slice(i + 1));
+        }
+    }
+    f('', str);
+    for (var i = 0; i < result.length; i++) {// eliminar la ultima coma
+        result[i] = result[i].replace(/,\s*$/, "");
+    }
+    return result.sort();
 }
 
 
@@ -381,6 +591,18 @@ function tree_contains(children, node){
         }
     }
     return false;
+}
+function contains_for_final_states(dfa_array, nfa_state_name){
+    nfa_state_name_split = nfa_state_name.split(',')
+    for (var i = 0; i < dfa_array.length; i++) {
+        
+        for (var j = 0; j < nfa_state_name_split.length; j++) {
+            if(dfa_array[i] === nfa_state_name[j])
+                return true;
+        }
+    }
+    return false;
+
 }
 function save(){
     console.log(saveBackup())
