@@ -11,6 +11,11 @@
       unitarias.push(unita);
       complemento.push(unita);
       complemento.push(comple);
+      document.getElementById("cfg_ta").value += "\n";
+      document.getElementById("cfg_ta").value += unita;
+      document.getElementById("cfg_ta").value += "--->";
+      document.getElementById("cfg_ta").value += comple;
+      document.getElementById("cfg_ta").value += "\n";
       document.getElementById("unita").value = " ";
       document.getElementById("comple").value = " ";
     }else{
@@ -18,6 +23,10 @@
       complemento.push(comple);
       //console.log(complemento);
       //console.log(unitarias);
+      document.getElementById("cfg_ta").value += unita;
+      document.getElementById("cfg_ta").value += "--->";
+      document.getElementById("cfg_ta").value += comple;
+      document.getElementById("cfg_ta").value += "\n";
       document.getElementById("unita").value = " ";
       document.getElementById("comple").value = " ";
     }
@@ -38,6 +47,7 @@
     console.log(unitarias);
     console.log(complemento);
     console.log("termino");
+    agregar_ta();
 
   }
 
@@ -362,5 +372,14 @@
         }
       }
       //console.log("termino el ciclo")
+    }
+  }
+
+  agregar_ta = function() {
+    for (var i = 0; i < unitarias.length; i++) {
+      document.getElementById("cnf_ta").value += unitarias[i];
+      document.getElementById("cnf_ta").value += "--->";
+      document.getElementById("cnf_ta").value += complemento[i];
+      document.getElementById("cnf_ta").value += "\n";
     }
   }
