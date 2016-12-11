@@ -129,3 +129,27 @@ tr#stack-row {
 #input {
     padding-top: 10px;
 }
+
+#cnfg_cng {
+    padding: 0;
+    margin: auto;
+    display: block;
+    width: 800px;
+    height: 600px;
+    position: relative;
+    top: 10px;
+    bottom: 0;
+    left: 0px;
+    right: 0;
+    border: 2px solid #ffffff;
+    background: #708090;
+}
+#div_cnf{
+
+}
+#div_cfg{
+  position : relative;
+	 margin: 50px 50px 50px 50px;
+	 padding: 5px 3px 10px;
+   height:300px;
+}

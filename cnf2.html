@@ -87,17 +87,53 @@
             <div id="page-wrapper">
             <div class = "row" id = "input" >
                         <div class="col-md-12 center">
-                            <input type= "text" id = "input_chain"></input>
-                            <button onclick="prueba_cadena()" >click</button>
+
                         </div>
                     </div>
                 <div class="mainComponents">
                     <div class="row">
                         <div class="col-md-12 center">
                             <div id="dfa_canvas">
-                                <canvas id="canvas" width="800" height="600">
-                                    <span class="error">Your browser does not support<br>the HTML5 &lt;canvas&gt; element</span>
-                                </canvas>
+                                <div id="cnfg_cng" width="800" height="600">
+
+                                  <div id="div_cfg " class="col-ms-12" >
+
+                                    <p> CFG </p>
+                                    <textarea "col-ms-4 " rows="4" cols="50" >
+                                      Aqui va ir unitarias
+                                    </textarea>
+                                    <br>
+                                    <br>
+
+                                  </div>
+
+                                  <div class="col-ms-12 ">
+                                    <form>
+                                       Unitaria
+                                      <input id="unita" type="text" name="unitario" width="50" height="30">
+                                       Complemento
+                                      <input id="comple" type="text" name="complemento">
+                                    </form>
+                                    <br>
+                                    <br>
+                                  </div>
+
+                                  <div class="col-ms-6 ">
+                                    <input type="button" value="Agregar" onclick=" Agregar_cfg() " >
+
+                                    <input type="button" value="Convertir" onclick=" Conventir_cnf() " >
+                                    <br>
+                                    <br>
+                                  </div>
+
+                                  <div id="div_cnf" class="col-ms-12" >
+
+                                    <p> CNF </p>
+                                    <textarea "col-ms-4" rows="4" cols="50">
+                                      Aqui va ir unitarias
+                                    </textarea>
+                                  </div>
+
                             </div>
                         </div>
                     </div>
@@ -115,7 +151,7 @@
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.2/jquery.min.js"></script>
     <script type="text/javascript" src="src/elements/Link.js"></script>
 
-    <script type="text/javascript" src="js/dfa.js"></script>
+    <script type="text/javascript" src="js/cfg_cnf.js"></script>
     <script type="text/javascript" src="src/elements/Node.js"></script>
     <script type="text/javascript" src="src/elements/SelfLink.js"></script>
     <script type="text/javascript" src="src/elements/StartLink.js"></script>
