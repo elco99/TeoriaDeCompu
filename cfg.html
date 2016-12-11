@@ -66,10 +66,10 @@
                                 <li>
                                     <a href="#">PDA</a>
                                 </li>
-                                <li>
+                                <li class="active">
                                     <a href="cfg.html">CFG</a>
                                 </li>
-                                <li class="active">
+                                <li>
                                     <a href="cnf2.html">CFG -> CNF</a>
                                 </li>
                             </ul>
@@ -96,44 +96,37 @@
                             <div id="dfa_canvas">
                                 <div id="cnfg_cng" width="800" height="600">
 
-                                  <div id="div_cfg " class="col-ms-12" >
+                                    <div id="div_cfg " class="col-ms-12" >
 
-                                    <h2> CFG </h2>
-                                    <textarea id="cfg_ta" "col-ms-4 " rows="6" cols="50" ></textarea>
-                                    <br>
+                                        <h2> CFG </h2>
+                                        <textarea id="cfg_ta" "col-ms-4 " rows="6" cols="50" ></textarea>
+                                        <br>
+                                    </div>
 
+                                    <div class="col-ms-12 ">
+                                        <form>
+                                            <h2>Relaciones</h2>
+                                            <input id="unita" type="text" name="unitario" width="50" height="30">
+                                            <span>----></span>
+                                            <input id="comple" type="text" name="complemento">
+                                        </form>
+                                        <br>
+                                    </div>
 
-                                  </div>
+                                    <div class="col-ms-6 ">
+                                        <input type="button" value="Agregar" onclick=" addRules(unita,comple) " >
+                                    </div>
 
-                                  <div class="col-ms-12 ">
-                                    <form>
-                                      <h4>Unitaria</h4>
-                                      <input id="unita" type="text" name="unitario" width="50" height="30">
-                                      <h4>Complemento</h4>
-                                      <input id="comple" type="text" name="complemento">
-                                    </form>
-                                    <br>
-
-                                  </div>
-
-                                  <div class="col-ms-6 ">
-                                    <input type="button" value="Agregar" onclick=" Agregar_cfg() " >
-
-                                    <input type="button" value="Convertir" onclick=" Conventir_cnf() " >
-                                    <br>
-
-                                  </div>
-
-                                  <div id="div_cnf" class="col-ms-12" >
-
-                                    <h2> CNF </h2>
-                                    <textarea id="cnf_ta" "col-ms-4" rows="10" cols="50"></textarea>
-                                  </div>
-
+                                    <div>
+                                        <br>
+                                        <h4>Cadena</h4>
+                                        <input id="input" type="text" name="input" width="50" height="30">
+                                        <br>
+                                        <input type="button" value="Probar Cadena" onclick=" generate() " >
+                                    </div>
                             </div>
                         </div>
                     </div>
-
                 </div>
             </div><!--END PAGE WRAPPER -->
     </div> <!-- END WRAPPER -->
@@ -147,13 +140,7 @@
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.2/jquery.min.js"></script>
     <script type="text/javascript" src="src/elements/Link.js"></script>
 
-    <script type="text/javascript" src="js/cfg_cnf.js"></script>
-    <script type="text/javascript" src="src/elements/Node.js"></script>
-    <script type="text/javascript" src="src/elements/SelfLink.js"></script>
-    <script type="text/javascript" src="src/elements/StartLink.js"></script>
-    <script type="text/javascript" src="src/elements/TemporaryLink.js"></script>
-    <script type="text/javascript" src="src/elements/Pointer.js"></script>
-    <script type="text/javascript" src="src/designer/fmsDesigner.js"></script>
+    <script type="text/javascript" src="js/cfg.js"></script>
 </body>
 
 </html>
