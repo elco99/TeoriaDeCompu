@@ -7,16 +7,16 @@
 
 body {
     font: 14px helvetica neue, helvetica, arial, sans-serif;
-    height: 680px;
-    overflow-y: hidden;
+    /*height: 680px;
+    overflow-y: hidden;*/
 }
 
 #canvas {
     padding: 0;
     margin: auto;
     display: block;
-    width: 800px;
-    height: 600px;
+    /*width: 800px;
+    height: 600px;*/
     position: relative;
     top: 10px;
     bottom: 0;

@@ -459,6 +459,7 @@ function saveBackup() {
     }
   }
   localStorage['fsm'] = JSON.stringify(backup);
+  return JSON.stringify(backup)
 }
 
 var greekLetterNames = [ 'Alpha', 'Beta', 'Gamma', 'Delta', 'Epsilon', 'Zeta', 'Eta', 'Theta', 'Iota', 'Kappa', 'Lambda', 'Mu', 'Nu', 'Xi', 'Omicron', 'Pi', 'Rho', 'Sigma', 'Tau', 'Upsilon', 'Phi', 'Chi', 'Psi', 'Omega' ];
