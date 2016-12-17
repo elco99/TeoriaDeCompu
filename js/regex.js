@@ -1,13 +1,13 @@
+var epsilon = "\\epsilon"
 function prueba_cadena(){
 
 	var expresion = document.getElementById('expresion').value;
 	var cadena = document.getElementById('cadena').value;
 	regex = new RegExp(expresion, 'i');
 	regex_exec = regex.exec(cadena)
-	console.log(infixToPostfix(expresion))
-	convertir(expresion)
 	//console.log(this.nodes)
 	//console.log(this.links)
+	convertir(expresion);
 	if(regex_exec != undefined){
 
 		if(regex_exec[0] === regex_exec.input)
@@ -23,7 +23,7 @@ function getNodePosition(array,value){// recibe el arreglo de todos los dfa indi
 	//console.log(array)
 	for (var i = 0; i < array.length; i++) {
 		for (var j = 0; j < array[i].nodes.length; j++) {
-			if(contains(array[i].nodes[j].text,value)){
+			if(array[i].nodes[j].text.contains(value)){
 				return i;
 			}			
 		}
@@ -42,7 +42,6 @@ function convertir(expresion){
 	this.links = [];
 	var espacio_entre_nodos = 150
 	var clean_input = expresion.replace(/([.*+?^=!:${}()|\[\]\/\\])/g, "")
-	console.log(clean_input)
 	var unrepeated_input = clean_input.split("").filter(function(x, n, s) { return s.indexOf(x) == n }).join("")
 	var contador = 0
 	var individual_dfas = [];
@@ -96,7 +95,7 @@ function convertir(expresion){
 		individual_dfas.push(dfa)	
 
 	}	
-	alfabeto_aceptable = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
+	alfabeto_aceptable = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789*()|+";
 	for (var i = 0; i < expresion.length; i++) {
 		if(alfabeto_aceptable.contains(expresion[i])){// es una letra/numero
 			if(i +1 < expresion.length){// que no se salga del tamano max
@@ -109,22 +108,18 @@ function convertir(expresion){
 				}else if(expresion[i+1] === "|"){
 					
 				}else if(alfabeto_aceptable.contains(expresion[i+1])){//concatenacion
-
 					var node_position1 = getNodePosition(individual_dfas,expresion[i]);
 					var node_position2 = getNodePosition(individual_dfas,expresion[i+1]);
+					
 					var concatenados = concatenacion(individual_dfas[node_position1], 
 								  individual_dfas[node_position2])
-						/*individual_dfas.splice(node_position1,1)
-						node_position2 = getNodePosition(individual_dfas,expresion[i+1]);
-						individual_dfas.splice(node_position2,1)
-						expresion.slice(i+1,1)*/
-					individual_dfas.push(concatenados);
-					console.log(individual_dfas)
-					//expresion = expresion.replace(expresion[i+1], "");
-					console.log(expresion)
+					expresion = expresion.remove(i+1)
+					individual_dfas.splice(i,2,concatenados) 
 
 
 				}
+
+				i = -1;// no 0 porque al volver a correr el ciclo le suma 1
 			}
 		}
 	}
@@ -132,15 +127,20 @@ function convertir(expresion){
 		'nodes': [],
 		'links': [],
 	};	
+	console.log(individual_dfas)
 	for (var i = 0; i < individual_dfas.length; i++) {
 		for (var k = 0; k < individual_dfas[i].nodes.length; k++) {
-			backup_done.nodes.push(individual_dfas[i].nodes[k])
+			if(!is_node_or_link_contained(backup_done.nodes,individual_dfas[i].nodes[k]))
+				backup_done.nodes.push(individual_dfas[i].nodes[k])
 		}
 		for (var j = 0; j < individual_dfas[i].links.length; j++) {
-			backup_done.links.push(individual_dfas[i].links[j])
+			// if(!is_node_or_link_contained(backup_done.links,individual_dfas[i].links[j]) 
+			// 		||(individual_dfas[i].links[j] instanceof StartLink) || individual_dfas[i].links[j] ===epsilon)
+				backup_done.links.push(individual_dfas[i].links[j])
 		}
-	}// mete los mismos nodos varias vecces!
+	}
 	console.log(backup_done)
+	console.log(expresion)
 	//restoreBackup(JSON.stringify(backup))
 	this.nodes = backup_done.nodes;
 	this.links = backup_done.links;
@@ -152,10 +152,20 @@ function convertir(expresion){
 }
 
 
+function is_node_or_link_contained(node_or_link_Array, node_or_link){
+	//recibe el arreglo de nodos o links (funciona para ambos ya que usaremos el campo text para comparar ambos)
+	//y compara si un nodo/link de igual nombre ya existe
+	for (var i = 0; i < node_or_link_Array.length; i++) {
+		if(node_or_link_Array[i].text === node_or_link.text)
+			return true;
+	}
+	return false
 
+}
 function concatenacion(left,right){
 	var end_nodes = [];
 	var new_nfa = {
+		'text': "",
 		'nodes': [],
 		'links': []
 	}
@@ -165,8 +175,15 @@ function concatenacion(left,right){
 			left.nodes[i].isAcceptState = false;
 			end_nodes.push(left.nodes[i])
 		}
+		new_nfa.nodes.push(left.nodes[i]);
 
-		new_nfa.nodes.push(left.nodes[i])
+	}
+	//nombremos el nuevo dfa con la letra inicial de el nodo inicial de el dfa left
+	for (var i = 0; i < left.links.length; i++) {
+		if(left.links[i] instanceof StartLink){
+			console.log("entro a left link start")
+			new_nfa.text = left.links[i].node.text[0];
+		}
 	}
 	for (var i = 0; i < right.links.length; i++) {
 		if(right.links[i] instanceof StartLink){
@@ -266,4 +283,8 @@ Array.prototype.clean = function() {
 }
 String.prototype.isNumeric = function() {
     return !isNaN(parseFloat(this)) && isFinite(this);
+}
+String.prototype.remove = function(position){
+	return this.slice(0, position) + this.slice(position+1, this.length)
+
 }
