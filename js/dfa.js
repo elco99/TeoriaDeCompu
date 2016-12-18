@@ -182,7 +182,7 @@ function show_probar_cadena(){
                       confirmButtonText: "Ok"
                     })
 
-                }, 1500);
+                }, 1000);
 
             }else{            
                 order_of_nodes_and_links_to_travel_through[order_current_position-1].animate("red")
@@ -194,7 +194,7 @@ function show_probar_cadena(){
                       confirmButtonText: "Ok"
                     })
 
-                }, 1500);
+                }, 1000);
             }           
         }
        
@@ -217,23 +217,10 @@ function NFA_probar_cadena(input,StartLink_position){
     get_tree_depth(tree,1,start_line)
     if(line_to_follow_to_accepting_nfa!== "") {
         build_order_of_nodes_and_links_to_travel_through_for_nfa(line_to_follow_to_accepting_nfa);
-        show_probar_cadena();
-        swal({
-          title: "Aceptada!",
-          text: "LA CADENA ES ACEPTADA",
-          type: "success",
-          confirmButtonText: "Ok"
-        });
-        return true;
+        show_probar_cadena();        
     }
     build_order_of_nodes_and_links_to_travel_through_for_nfa(one_line_to_follow_to_rejecting_nfa);
-    show_probar_cadena();
-    swal({
-      title: "Rechazada!",
-      text: "LA CADENA ES RECHAZADA",
-      type: "error",
-      confirmButtonText: "Ok"
-    });
+    show_probar_cadena();   
     return false;
 }
 function construct_tree(input,position_on_input,current_node){

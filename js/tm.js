@@ -159,29 +159,6 @@ TM.prototype.probar_cadena = function() {
             current_state = this.reject_state.text;
     }
 
-    if (current_state == this.accept_state.text) {
-        swal({
-          title: "Aceptado!",
-          text: "La cadena es aceptada!",
-          type: "success",
-          confirmButtonText: "Ok"
-        },function(isConfirm){
-          if (isConfirm) {
-            animation();
-          }
-        });
-    } else {
-        swal({
-          title: "Rechazado!",
-          text: "La cadena es rechazada!",
-          type: "error",
-          confirmButtonText: "Ok"
-        },function(isConfirm){
-          if (isConfirm) {
-            animation();
-          }
-        });
-    }
 
     this.states_path = this.getStatesFromText();
     this.transitions_path = this.getTransitionsFromText();
@@ -352,6 +329,7 @@ function start_probar_cadena() {
         var tm = new TM(nodes, links, document.getElementById('cadena').value);
         if (tm.not_tm()) {
             tm.probar_cadena();
+            animation();
         }
     } else {
         swal({
@@ -374,9 +352,27 @@ function animation(){
         if(node_amount === order_of_nodes_and_links_to_travel_through.length){
             if(order_of_nodes_and_links_to_travel_through[node_amount-1].isAcceptState){
                 order_of_nodes_and_links_to_travel_through[node_amount-1].animate("#58FA58")
+                setTimeout(function(){ 
+                    swal({
+                      title: "Aceptada!",
+                      text: "LA CADENA ES ACEPTADA",
+                      type: "success",
+                      confirmButtonText: "Ok"
+                    })
+
+                }, 1000);
 
             }else{            
                 order_of_nodes_and_links_to_travel_through[node_amount-1].animate("red")
+                setTimeout(function(){ 
+                    swal({
+                      title: "Reachazada!",
+                      text: "LA CADENA ES RECHAZADA",
+                      type: "error",
+                      confirmButtonText: "Ok"
+                    })
+
+                }, 1000);
             }
         }
        
