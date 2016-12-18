@@ -3,6 +3,7 @@ function SelfLink(node, mouse) {
 	this.anchorAngle = 0;
 	this.mouseOffsetAngle = 0;
 	this.text = '';
+	this.change_color = false;
 
 	if(mouse) {
 		this.setAnchorPoint(mouse.x, mouse.y);
@@ -12,7 +13,6 @@ function SelfLink(node, mouse) {
 SelfLink.prototype.setMouseStart = function(x, y) {
 	this.mouseOffsetAngle = this.anchorAngle - Math.atan2(y - this.node.y, x - this.node.x);
 };
-
 SelfLink.prototype.setAnchorPoint = function(x, y) {
 	this.anchorAngle = Math.atan2(y - this.node.y, x - this.node.x) + this.mouseOffsetAngle;
 	// snap to 90 degrees
@@ -48,20 +48,29 @@ SelfLink.prototype.getEndPointsAndCircle = function() {
 };
 SelfLink.prototype.animate = function(color,size){
 	this.strokeStyle = color;
+	this.change_color = true;
 };
-SelfLink.prototype.draw = function(c) {
+SelfLink.prototype.draw = function(c,color) {
 	var stuff = this.getEndPointsAndCircle();
 	// draw arc
 	c.beginPath();
 	c.arc(stuff.circleX, stuff.circleY, stuff.circleRadius, stuff.startAngle, stuff.endAngle, false);
-	c.strokeStyle = this.strokeStyle?this.strokeStyle:'white';
+	if(this.change_color){
+		c.strokeStyle = this.strokeStyle;
+	}
+	else{
+		c.strokeStyle = this.strokeStyle?this.strokeStyle:'white';
+	}
+	
 	c.stroke();
 	// draw the text on the loop farthest from the node
 	var textX = stuff.circleX + stuff.circleRadius * Math.cos(this.anchorAngle);
 	var textY = stuff.circleY + stuff.circleRadius * Math.sin(this.anchorAngle);
 	drawText(c, this.text, textX, textY, this.anchorAngle, selectedObject == this);
 	// draw the head of the arrow
-	drawArrow(c, stuff.endX, stuff.endY, stuff.endAngle + Math.PI * 0.4);
+	drawArrow(c, stuff.endX, stuff.endY, stuff.endAngle + Math.PI * 0.4,this.change_color, this.strokeStyle);
+	
+	// this.change_color = false;
 };
 
 SelfLink.prototype.containsPoint = function(x, y) {

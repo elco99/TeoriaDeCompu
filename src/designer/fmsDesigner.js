@@ -1,4 +1,4 @@
-function drawArrow(c, x, y, angle) {
+/*function drawArrow(c, x, y, angle) {
   var dx = Math.cos(angle);
   var dy = Math.sin(angle);
   c.beginPath();
@@ -6,6 +6,19 @@ function drawArrow(c, x, y, angle) {
   c.lineTo(x - 8 * dx + 5 * dy, y - 8 * dy - 5 * dx);
   c.lineTo(x - 8 * dx - 5 * dy, y - 8 * dy + 5 * dx);
   c.fillStyle = "white";
+  c.fill();
+}*/
+function drawArrow(c, x, y, angle,chosenColor,color) {
+  var dx = Math.cos(angle);
+  var dy = Math.sin(angle);
+  c.beginPath();
+  c.moveTo(x, y);
+  c.lineTo(x - 8 * dx + 5 * dy, y - 8 * dy - 5 * dx);
+  c.lineTo(x - 8 * dx - 5 * dy, y - 8 * dy + 5 * dx);
+  if(chosenColor)
+    c.fillStyle = color;
+  else
+    c.fillStyle = "white";
   c.fill();
 }
 

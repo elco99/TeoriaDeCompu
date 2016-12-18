@@ -10,6 +10,7 @@ function prueba_cadena(){
 	regex_exec = regex.exec(cadena)
 	//console.log(this.nodes)
 	//console.log(this.links)
+	console.log(localStorage['fsm'])
 	convertir(expresion);
 	if(regex_exec != undefined){
 
@@ -48,8 +49,8 @@ function convertir(expresion){
 	        var backupNodeA = new Node(x_position,y_position);
 	        backupNodeA.text = nombres_aceptables[nombres_aceptables_position_for_nfa];
 	        var start_link = new StartLink(backupNodeA);
-	        start_link.deltaX = -50;
-	    	start_link.deltaY = -50;
+	        start_link.deltaX = 0;
+	    	start_link.deltaY = -60;
 			contador++;
 			if(x_position + espacio_entre_nodos >=750){
 				x_position = espacio_entre_nodos;
@@ -106,16 +107,14 @@ function convertir(expresion){
   		if(nombres_aceptables.contains(expresion[i])){// i es aceptable
 			if(i +1 < expresion.length){
 				var node_position1 = getNodePosition(individual_nfas,expresion[i]);
-				if(expresion[i+1] === "*" && prioridad === 0){// estrella
+				if( (expresion[i+1] === "*" ||expresion[i+1] === "+") && prioridad === 0){// estrella
 
-					var current_nfas = "";
-					for (var j = 0; j < individual_nfas.length; j++) {
-						current_nfas+= individual_nfas[j].text
-					}
-					console.log(current_nfas)
+					
 
-
-					var nfa_despues_de_estrella = estrella(individual_nfas[node_position1]);
+					var tipo = false;
+					if(expresion[i+1] === "+")
+						tipo = true;
+					var nfa_despues_de_estrella_o_mas = estrella_o_mas(individual_nfas[node_position1],tipo);
 					expresion = expresion.remove(i+1)
 					var symbols_counter  = 0;
 					for (var j = 0; j < i; j++) {// debemos contar cuantos +)| hay antes de este punto
@@ -123,13 +122,9 @@ function convertir(expresion){
 						if("|)+".contains(expresion[j]))
 							symbols_counter++;
 					}
-					individual_nfas.splice(i-symbols_counter,1,nfa_despues_de_estrella) // no es i por que i incluye los |
+					individual_nfas.splice(i-symbols_counter,1,nfa_despues_de_estrella_o_mas) // no es i por que i incluye los |
 
-					var current_nfas = "";
-					for (var j = 0; j < individual_nfas.length; j++) {
-						current_nfas+= individual_nfas[j].text
-					}
-					console.log(current_nfas)
+					
 
 				}else if(expresion[i+1] === "|" && prioridad ===1){
 					var node_position2 = getNodePosition(individual_nfas,expresion[i+2]);
@@ -145,8 +140,6 @@ function convertir(expresion){
 					//primero vemos si nuestro objetivo de concatenacion no tiene ninguna operacion pendiente
 					//por ejemplo ab* primero deberiamos hacer b* antes de proceder con ab
 						
-					
-						console.log("entro2")
 						var node_position2 = getNodePosition(individual_nfas,expresion[i+1]);
 						
 						var concatenados = concatenacion(individual_nfas[node_position1], 
@@ -200,8 +193,6 @@ function convertir(expresion){
 
 
 }
-
-
 function union(left,right){
 	var new_nfa = {
 		'text': "",
@@ -280,14 +271,18 @@ function union(left,right){
 
 }
 
-function estrella(nfa){
+function estrella_o_mas(nfa,tipo){//
+	// si tipo es false, se hace estrella, si es true, se hace mas 
 	//se necesita crear un nodo inicial que sea tambien final, eliminar el nodo final actual y
 	//debido a que actualmente la implementacion ya llevo creados y posicionados los estados,
 	//habra que reposicionarlos todos o simplemente tirar el nuevo estado al final
 	//(lo cual es mucho mas facil pero se vera del asco)
 	
 	var start_state = new Node(x_position ,y_position)	// el nuevo estado inicial	
-	start_state.isAcceptState= true;
+	if(!tipo)
+		start_state.isAcceptState = true;
+	else
+		start_state.isAcceptState = false;
 	start_state.text = nombres_aceptables[nombres_aceptables_position_for_nfa]
 	nombres_aceptables_position_for_nfa++;
 	nfa.nodes.splice(0,0,start_state);// insertamos al inicio
@@ -381,7 +376,7 @@ function concatenacion(left,right){
                 link.perpendicularPart = 0;
                 link.text = epsilon;
                 console.log(new_nfa)                
-                console.log("node: " , end_nodes[k],"posicion", get_node_or_link_position(new_nfa.nodes,end_nodes[k]))
+                // console.log("node: " , end_nodes[k],"posicion", get_node_or_link_position(new_nfa.nodes,end_nodes[k]))
 			    var anchorPoint = calcularAnchorPoint(new_nfa, get_node_or_link_position(new_nfa.nodes,end_nodes[k])
 			    										,get_node_or_link_position(new_nfa.nodes,right.links[i].node));
 			    link.setAnchorPoint(anchorPoint.x,anchorPoint.y);

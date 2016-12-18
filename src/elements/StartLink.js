@@ -4,6 +4,7 @@ function StartLink(node, start) {
 	this.deltaY = 0;
 	this.text = '';
 
+	this.change_color = false;
 	if(start) {
 		this.setAnchorPoint(start.x, start.y);
 	}
@@ -34,14 +35,25 @@ StartLink.prototype.getEndPoints = function() {
 	};
 };
 
-StartLink.prototype.draw = function(c) {
+StartLink.prototype.animate = function(color){
+	this.strokeStyle = color;
+	this.change_color = true;
+};
+
+StartLink.prototype.draw = function(c,color) {
 	var stuff = this.getEndPoints();
 
 	// draw the line
 	c.beginPath();
 	c.moveTo(stuff.startX, stuff.startY);
 	c.lineTo(stuff.endX, stuff.endY);
-	c.strokeStyle = 'white';
+
+	if(this.change_color){
+		c.strokeStyle = this.strokeStyle;
+	}
+	else{
+		c.strokeStyle = this.strokeStyle?this.strokeStyle:'white';
+	}
 	c.stroke();
 
 	// draw the text at the end without the arrow
@@ -49,7 +61,9 @@ StartLink.prototype.draw = function(c) {
 	drawText(c, this.text, stuff.startX, stuff.startY, textAngle, selectedObject == this);
 
 	// draw the head of the arrow
-	drawArrow(c, stuff.endX, stuff.endY, Math.atan2(-this.deltaY, -this.deltaX));
+	drawArrow(c, stuff.endX, stuff.endY, Math.atan2(-this.deltaY, -this.deltaX),this.change_color, this.strokeStyle);
+
+	// this.change_color = false;
 };
 
 StartLink.prototype.containsPoint = function(x, y) {

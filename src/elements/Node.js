@@ -1,6 +1,7 @@
 function Node(x, y) {
 	this.x = x;
 	this.y = y;
+	this.change_color = false;
 	this.mouseOffsetX = 0;
 	this.mouseOffsetY = 0;
 	this.isAcceptState = false;
@@ -16,10 +17,12 @@ Node.prototype.setAnchorPoint = function(x, y) {
 	this.x = x + this.mouseOffsetX;
 	this.y = y + this.mouseOffsetY;
 };
-Node.prototype.animate  = function(color,nodeRadius){
+
+Node.prototype.animate  = function(color){
 	this.strokeStyle = color;
-	this.nodeRadius = nodeRadius;
-}
+	this.change_color = true;
+};
+
 Node.prototype.draw = function(c) {
 	// draw the circle
 
@@ -28,7 +31,11 @@ Node.prototype.draw = function(c) {
 	}
 	c.beginPath();
 	c.arc(this.x, this.y, nodeRadius, 0, 2 * Math.PI, false);
-	c.strokeStyle = this.strokeStyle?this.strokeStyle:'white';
+
+	if(this.change_color)
+		c.strokeStyle = this.strokeStyle;
+	else
+		c.strokeStyle = this.strokeStyle?this.strokeStyle:'white';
 	c.stroke();
 
 	// draw the text

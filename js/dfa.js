@@ -1,12 +1,29 @@
-var epsilon = "\\epsilon"
-var empty_set = "\\phi"
+var epsilon = "\\epsilon";
+var empty_set = "\\phi";
+var show_probar_cadena_time =500;
 var max_depth = 0;
+var order_of_nodes_and_links_to_travel_through = [];
+var order_current_position= 0;
+var nfa_color_to_use = "blue";
+var line_to_follow_to_accepting_nfa = "";
+var one_line_to_follow_to_rejecting_nfa = "";
 function prueba_cadena(){
     //console.log(this.links[0].nodeB)
+    for (var i = 0; i < this.nodes.length; i++) {//clean all colors
+        this.nodes[i].animate("white")
+    }
+    draw();
+    order_of_nodes_and_links_to_travel_through = [];
+    order_current_position= 0;
+    nfa_color_to_use = "blue";
+    line_to_follow_to_accepting_nfa = "";
+    one_line_to_follow_to_rejecting_nfa = "";
     var input = document.getElementById('input_chain').value;
 	//console.log(this.nodes) 
     //console.log(this.links);
    // console.log(input)
+
+    
     var StartLink_position = -1;
     var cont =0 ;
     for (var i = 0; i < this.links.length; i++) {
@@ -30,6 +47,7 @@ function prueba_cadena(){
 
     if(is_DFA()){
         console.log("SI ES UN DFA")
+        console.log(this.nodes)
         DFA_probar_cadena(input,StartLink_position)
     }else{
         console.log("ES NFA")
@@ -76,6 +94,7 @@ function is_DFA(){
             var current_link_text = this.links[j].text.split(',')
             for (var k = 0; k < current_link_text.length; k++) {
                 if(!contains(alfabeto_check,current_link_text[k]) && current_link_text[k] != "" ){
+
                     if(this.links[j].nodeA == undefined){
                         if(this.links[j].node.text === current_node.text){
                             alfabeto_check.push(current_link_text[k])
@@ -101,7 +120,13 @@ function is_DFA(){
 
 }
 function DFA_probar_cadena(input,StartLink_position){
-        var current_node = this.links[StartLink_position].node;
+       /* order_structure.tipo = "Link";
+        order_structure.posicion = StartLink_position;
+        order_structure.text = this.links[StartLink_position].text;
+        order_of_nodes_and_links_to_travel_through.push(order_structure)*/
+        var current_node = this.links[StartLink_position].node;        
+        order_of_nodes_and_links_to_travel_through.push(this.links[StartLink_position]);
+        order_of_nodes_and_links_to_travel_through.push(this.links[StartLink_position].node);
         for (var i = 0; i < input.length; i++) {
             var current_link = -1;
             for (var j = 0; j < this.links.length; j++) {
@@ -109,10 +134,16 @@ function DFA_probar_cadena(input,StartLink_position){
                 for (var k = 0; k < current_link_text.length; k++) {
                     if(current_link_text[k] === input[i]){
                         //console.log(current_node.text)
-                        if(this.links[j].nodeB != undefined && this.links[j].nodeA.text === current_node.text){
+                        if(this.links[j].nodeB !== undefined && this.links[j].nodeA.text === current_node.text){
                             current_node = this.links[j].nodeB;
-                            j = this.links.length // para salirse del ciclo de j que break solo saldra de k
+
+                            order_of_nodes_and_links_to_travel_through.push(this.links[j]);
+                            order_of_nodes_and_links_to_travel_through.push(this.links[j].nodeB);
+                            j = this.links.length // para salirse del ciclo de j que break solo saldra de k   
                             break;
+                        }else if(this.links[j] instanceof SelfLink  && this.links[j].node.text === current_node.text){  
+                            order_of_nodes_and_links_to_travel_through.push(this.links[j]);
+                            order_of_nodes_and_links_to_travel_through.push(this.links[j].node);
                         }
                         
                     }
@@ -120,13 +151,43 @@ function DFA_probar_cadena(input,StartLink_position){
 
             }
         }
-        //  console.log(current_node)
+
+        //console.log(order_of_nodes_and_links_to_travel_through)
+        show_probar_cadena();
         if(current_node.isAcceptState){
             console.log("LA CADENA ES ACEPTADA")
             return true;
         }
         console.log("LA CADENA ES RECHAZADA")
         return false;
+}
+
+
+function show_probar_cadena(){
+    if(order_current_position < order_of_nodes_and_links_to_travel_through.length){
+        if(order_current_position > 0){
+            order_of_nodes_and_links_to_travel_through[order_current_position-1].animate("white")
+        }
+            
+        order_of_nodes_and_links_to_travel_through[order_current_position].animate("blue")
+        order_current_position++;
+        if(order_current_position === order_of_nodes_and_links_to_travel_through.length){
+            if(order_of_nodes_and_links_to_travel_through[order_current_position-1].isAcceptState){
+                order_of_nodes_and_links_to_travel_through[order_current_position-1].animate("#58FA58")
+
+            }else{            
+                order_of_nodes_and_links_to_travel_through[order_current_position-1].animate("red")
+            }
+        }
+       
+        draw();
+        setTimeout(show_probar_cadena, show_probar_cadena_time);        
+    }else{
+    }
+
+}
+function makeRandomColor(){
+    return '#'+(0x1000000+(Math.random())*0xffffff).toString(16).substr(1,6)
 }
 function NFA_probar_cadena(input,StartLink_position){
     //construir el arbol
@@ -157,13 +218,24 @@ function NFA_probar_cadena(input,StartLink_position){
 
     var current_node = this.links[StartLink_position].node;
     var tree=construct_tree(input,0,current_node)
-    //console.log(tree);
-    get_tree_depht(tree,1,input.length)
+    console.log(tree);
+
+    line_to_follow_to_accepting_nfa = ""; 
+    one_line_to_follow_to_rejecting_nfa = ""; 
+    var start_line = ""   
+    get_tree_depth(tree,1,start_line)
+    //run_tree_depth(tree,1,input.length,start_line)
+    console.log(line_to_follow_to_accepting_nfa)
+        //show_probar_cadena_nfa();
     // console.log(max_depth);
-    if(check_if_leaf_nodes_isAcceptState(tree,1)) {
-            console.log("LA CADENA ES ACEPTADA")
-            return true;
+    if(line_to_follow_to_accepting_nfa!== "") {
+        build_order_of_nodes_and_links_to_travel_through_for_nfa(line_to_follow_to_accepting_nfa);
+        show_probar_cadena();
+        console.log("LA CADENA ES ACEPTADA")
+        return true;
     }
+    build_order_of_nodes_and_links_to_travel_through_for_nfa(one_line_to_follow_to_rejecting_nfa);
+    show_probar_cadena();
     console.log("LA CADENA ES RECHAZADA")
     return false;
 }
@@ -171,7 +243,8 @@ function construct_tree(input,position_on_input,current_node){
     var tree ={
         'text': current_node.text,
         'children': [],
-        'isAcceptState':current_node.isAcceptState
+        'isAcceptState':current_node.isAcceptState,
+        'parents':[]
     }
     if(position_on_input < input.length ){
        
@@ -184,16 +257,24 @@ function construct_tree(input,position_on_input,current_node){
                     if(this.links[i] instanceof Link){// si no es un self-link o start-link
                         if(this.links[i].nodeA.text === current_node.text){// si el link contiene el input y sale del nodo actual                                
                            
-                            if(!tree_contains(tree.children,this.links[i].nodeB))
-                                    tree.children.push(construct_tree(input,position_on_input+1,  this.links[i].nodeB))
+                            if(!tree_contains(tree.children,this.links[i].nodeB)){
+                                tree.children.push(construct_tree(input,position_on_input+1,  this.links[i].nodeB))
+                              // var answer = setTimeOut(construct_tree,500, input,position_on_input+1,  this.links[i].nodeB)
+                              // tree.children.push(answer)
+
+                            }
                             
                         }
                     }else if(this.links[i] instanceof SelfLink){
                         if(this.links[i].node.text === current_node.text){// si el link contiene el input y sale del nodo actual
                             
 
-                            if(!tree_contains(tree.children,this.links[i].node))
-                            tree.children.push(construct_tree(input,position_on_input+1, current_node)) 
+                            if(!tree_contains(tree.children,this.links[i].node)){  
+                                tree.children.push(construct_tree(input,position_on_input+1, current_node)) 
+                                // var answer = setTimeOut(construct_tree,500, input,position_on_input+1,  current_node)
+                                // tree.children.push(answer) 
+                                
+                            }
                            
 
                         }
@@ -203,15 +284,22 @@ function construct_tree(input,position_on_input,current_node){
                         if(this.links[i].nodeA.text === current_node.text){// si el link contiene el input y sale del nodo actual                                
                             
 
-                            if(!tree_contains(tree.children,this.links[i].nodeB))
-                                    tree.children.push(construct_tree(input,position_on_input,  this.links[i].nodeB))
+                            if(!tree_contains(tree.children,this.links[i].nodeB)){
+                                tree.children.push(construct_tree(input,position_on_input,  this.links[i].nodeB))
+                                // var answer = setTimeOut(construct_tree,500, input,position_on_input,   this.links[i].nodeB)
+                                // tree.children.push(answer) 
+                            }
                            
                         }
                     }else if(this.links[i] instanceof SelfLink){
                         if(this.links[i].node.text === current_node.text){// si el link contiene el input y sale del nodo actual
                             
-                            if(!tree_contains(tree.children,this.links[i].node)) 
-                                    tree.children.push(construct_tree(input,position_on_input, current_node))
+                            if(!tree_contains(tree.children,this.links[i].node)) {
+                                tree.children.push(construct_tree(input,position_on_input, current_node))
+                                
+                                // var answer = setTimeOut(construct_tree,500, input,position_on_input,   current_node)
+                                // tree.children.push(answer) 
+                            }
 
                            
                         }
@@ -334,7 +422,7 @@ function convert_nfa_to_dfa(){
     for (var i = 0; i < backup.nodes.length; i++) {
         if(backup.nodes[i].text === q0_dfa){
             var start_link = new StartLink(backup.nodes[i]);
-            start_link.deltaX = -100; // -100 pixeles de separacion hacia la izquierda con su centro
+            start_link.deltaX = -100; // -100 pixeles de separacion hacia la izquierda con su centro         
             start_link.deltaY = 0;  
             backup.links.push(start_link)
         }
@@ -371,7 +459,7 @@ function convert_nfa_to_dfa(){
 
 
     }
-    console.log(backup.links)
+    
     
 
     this.nodes = backup.nodes;
@@ -528,21 +616,7 @@ function combinations(str) {
 }
 
 
-function check_if_leaf_nodes_isAcceptState(tree, current_depth){
-    var leaf_isAcceptState = false;
-    if(tree.children.length === 0 ){// es hoja
-        if(tree.isAcceptState && current_depth === max_depth)
-            return true;
 
-    }else{
-        for (var i = 0; i < tree.children.length; i++) {
-            leaf_isAcceptState= check_if_leaf_nodes_isAcceptState(tree.children[i],current_depth+1)
-            if(leaf_isAcceptState)
-                return true;
-        }
-    }
-    return leaf_isAcceptState
-}
 function e_transitions_for_testing_strings(current_node){
     var states = []
     for (var i = 0; i < this.links.length; i++) {
@@ -563,15 +637,57 @@ function e_transitions_for_testing_strings(current_node){
 
 }
 
-function get_tree_depht(tree,current_depth){
+function get_tree_depth(tree,current_depth,line_to_get_here){
     if(tree.children.length  === 0 ){//es hoja
         if(current_depth > max_depth){
             max_depth = current_depth;
         }
     }
-    for (var i = 0; i < tree.children.length; i++) {//no es hoja asi que nos movemos dentro de sus hijos
-        get_tree_depht(tree.children[i],current_depth+1)
+
+    if(line_to_get_here !== "")
+        var new_line_to_get_here = "" + line_to_get_here + "," + tree.text;
+    else
+        var new_line_to_get_here = tree.text;
+    console.log("len " ,tree.children.length  ,"acpt " ,tree.isAcceptState ,"c_d ",current_depth ,"m_d",max_depth, "line: ",new_line_to_get_here
+            ,"p-line: ", line_to_get_here)
+    if(tree.children.length === 0 && tree.isAcceptState && current_depth === max_depth){//es hoja, aceptada y tiene la maxima longitud
+        line_to_follow_to_accepting_nfa = new_line_to_get_here;
+    }else if(tree.children.length === 0 && one_line_to_follow_to_rejecting_nfa.length < new_line_to_get_here.length){
+        one_line_to_follow_to_rejecting_nfa = new_line_to_get_here;
     }
+    for (var i = 0; i < tree.children.length; i++) {//no es hoja asi que nos movemos dentro de sus hijos
+        get_tree_depth(tree.children[i],current_depth+1,new_line_to_get_here)
+    }
+}
+
+function build_order_of_nodes_and_links_to_travel_through_for_nfa(line_to_follow){
+    //lo construye apartir de line_to_follow_to_accepting_nfa
+    var names_array = line_to_follow.split(',')
+    var found_start_link = false;
+    for (var i = 0; i < names_array.length; i++) {
+        
+        if(i < names_array.length ){
+            for (var j = 0;  j < this.links.length; j++) {
+                if(this.links[j] instanceof StartLink && !found_start_link){// meter el link inicial y el nodo inicial
+                    found_start_link= true;
+                    order_of_nodes_and_links_to_travel_through.splice(0,0,this.links[j])
+                    order_of_nodes_and_links_to_travel_through.splice(1,0,this.links[j].node)
+                }else if(i > 0 && this.links[j] instanceof Link){
+                    if(this.links[j].nodeA.text === names_array[i-1] &&this.links[j].nodeB.text === names_array[i] ){
+                        order_of_nodes_and_links_to_travel_through.push(this.links[j])
+                        order_of_nodes_and_links_to_travel_through.push(this.links[j].nodeB)
+                    }
+
+                }else if(i > 0 && this.links[j] instanceof SelfLink){
+                    if(this.links[j].node.text === names_array[i-1] &&this.links[j].node.text === names_array[i] ){
+                        order_of_nodes_and_links_to_travel_through.push(this.links[j])
+                        order_of_nodes_and_links_to_travel_through.push(this.links[j].node)
+                    }
+                }
+            }
+        }
+    }
+
 }
 function contains(array,value){
     for (var i = 0; i < array.length; i++) {
@@ -604,9 +720,33 @@ function contains_for_final_states(dfa_array, nfa_state_name){
     return false;
 
 }
+
+function get_node_with_name(node_array, name){
+    //recibe el arreglo de nodos o links (funciona para ambos ya que usaremos el campo text para comparar ambos)
+    //y compara si un nodo/link de igual nombre ya existe
+    for (var i = 0; i < node_array.length; i++) {
+        if(node_array[i].text ===name)
+            return node_array[i];
+    }
+    return -1;
+
+}
+function get_node_or_link_position(node_or_link_Array, node_or_link){
+    //recibe el arreglo de nodos o links (funciona para ambos ya que usaremos el campo text para comparar ambos)
+    //y compara si un nodo/link de igual nombre ya existe
+    for (var i = 0; i < node_or_link_Array.length; i++) {
+        if(node_or_link_Array[i].text === node_or_link.text)
+            return i;
+    }
+    return -1;
+
+}
+
 function save(){
     console.log(saveBackup())
 }
 function load(){
+    this.nodes = [];
+    this.links = [];
     restoreBackup(document.getElementById("load_inpupt").value)
 }
