@@ -185,7 +185,14 @@ TM.prototype.probar_cadena = function() {
 
     this.states_path = this.getStatesFromText();
     this.transitions_path = this.getTransitionsFromText();
-    
+    for (var i = 0; i < links.length; i++){
+        if (links[i] instanceof StartLink){
+            order_of_nodes_and_links_to_travel_through.push(links[i])
+            order_of_nodes_and_links_to_travel_through.push(links[i].node)
+            break;
+        }
+    }
+
     for (var i = 0; i < this.transitions_path.length; i++) {//mete las transiciones para poder hacer el cambio de color
         if (this.transitions_path[i] instanceof SelfLink) {
             order_of_nodes_and_links_to_travel_through.push(this.transitions_path[i]);
