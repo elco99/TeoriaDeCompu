@@ -45,14 +45,14 @@
                 <!-- Sidebar Menu Items - These collapse to the responsive navigation menu on small screens -->
                 <div class="collapse navbar-collapse navbar-ex1-collapse">
                     <ul class="nav navbar-nav side-nav">
-                        <li  class="active">
+                        <li >
                             <a data-toggle="collapse" data-target="#demo"><i class="fa fa-fw fa-dashboard"></i> Lenguajes Regulares <i class="fa fa-fw fa-caret-down"></i></a>
                             <ul id="demo" class="collapse">
-                                <li class="active">
+                                <li >
                                     <a href="index.html">DFA / NFA</a>
                                 </li>
                                 <li>
-                                    <a href="#">Regex</a>
+                                    <a href="regex.html">Regex</a>
                                 </li>
                                 <li>
                                     <a href="#">Convertir</a>
@@ -61,22 +61,22 @@
                         </li>
 
                         <li>
-                            <a data-toggle="collapse" data-target="#demo"><i class="fa fa-fw fa-dashboard"></i> Lenguajes de Contexto <i class="fa fa-fw fa-caret-down"></i></a>
-                            <ul id="demo" class="collapse">
+                            <a data-toggle="collapse" data-target="#demo2"><i class="fa fa-fw fa-dashboard"></i> Lenguajes de Contexto <i class="fa fa-fw fa-caret-down"></i></a>
+                            <ul id="demo2" class="collapse">
                                 <li>
                                     <a href="#">PDA</a>
                                 </li>
                                 <li>
-                                    <a href="#">CFG</a>
+                                    <a href="cfg.html">CFG</a>
                                 </li>
                                 <li>
-                                    <a href="#">CFG -> CNF</a>
+                                    <a href="cnf.html">CFG -> CNF</a>
                                 </li>
                             </ul>
                         </li>
 
-                        <li>
-                            <a href="#"><i class="fa fa-fw fa-dashboard"></i>Lenguajes Decidibles</a>
+                        <li  class="active">
+                            <a href="tm.html" ><i class="fa fa-fw fa-dashboard"></i>Lenguajes Decidibles</a>
                         </li>
 
                     </ul>
@@ -87,7 +87,7 @@
             <div id="page-wrapper">
             <div class = "row" id = "input" >
                         <div class="col-md-12 center">
-                            <input type= "text" id = "input_text"></input>
+                            <input type= "text" id = "cadena"></input>
                             <button onclick="disableCanvas()" >click</button>
                             <button onclick="save()" >save</button>
                             <input type= "text" id = "load_inpupt"></input>
