@@ -86,20 +86,25 @@
             <!-- /.navbar-collapse -->
         </nav>
           <div class="PDA">
-            <div class="col-md-9 col-md-offset-1 ">
+            <div class="col-md-12 col-md-offset-1 ">
                 <div class="row">
                     <h1>PDA</h1>
                     <input id="input_textPDA" type="text">
                     <button type="button" onclick="disableMouseOverPDACanvas()">Procesar Cadena</button>
-                    <button type="button" onclick="restoreBackup1()">Ejemplo 1</button>
-                    <button type="button" onclick="restoreBackup2()">Ejemplo 2</button>
-                    <div id="stack" >
+                    <button type="button" onclick="Prueba()">Ejemplo 1</button>
+                    <h4 class="StackTitle">Stack:</h4>
+                    <div id="stack">
                         <table>
-                            <tr id="stack-row"></tr>
+                          <tr id="stack-row"></tr>
                         </table>
+                      </div>
                     </div>
-                </div>
+
+
             </div>
+            <div class="col-md-9">
+
+              </div>
             <div class="col-md-9 center">
               <div id="pda_canvas">
                   <canvas id="canvas" width="800" height="600">
