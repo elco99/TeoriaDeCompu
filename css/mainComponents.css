@@ -1,3 +1,19 @@
+.input{
+  padding-top: 2%;
+  margin-left: 20%;
+}
+
+.PDA{
+  background-color: white;
+  height: 750px;
+  width: 900px;
+
+}
+
+.drawer{
+  margin-left: 15%;
+}
+
 * {
     -webkit-box-sizing: border-box;
     -moz-box-sizing: border-box;
@@ -109,7 +125,9 @@ table.transitions,
 div#stack table,
 div#stack tr,
 div#stack td {
-    border: 1px solid black;
+    margin-top: 5px;
+    color: green;
+    text-align: center;
 }
 
 #stack td {
