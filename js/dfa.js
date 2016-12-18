@@ -49,33 +49,30 @@ function prueba_cadena(){
         });
         return false;
     }
+    var accepted_names =true;
+    var array_to_check_dupes = [];
+    for (var i = 0; i < this.nodes.length; i++) {
+        if(this.nodes[i].text == ""){
+            accepted_names = false;
+            array_to_check_dupes.push(this.nodes[i].text)
+        }
+    }
+    if(!accepted_names || hasDuplicates(array_to_check_dupes) ){
+        swal({
+          title: "Error!",
+          text: "NOMBRES DE NODOS INCOMPLETOS O REPETIDOS",
+          type: "error",
+          confirmButtonText: "Ok"
+        });
+        return false;
+    }
+
     
 
     if(is_DFA()){
-        swal({
-          title: "DFA!",
-          text: "SI ES UN DFA",
-          type: "error",
-          confirmButtonText: "Ok"
-        },function(isConfirm){
-            if(isConfirm){
-                DFA_probar_cadena(input,StartLink_position)
-            }
-        });
-        
+        DFA_probar_cadena(input,StartLink_position)        
     }else{
-        swal({
-          title: "NFA!",
-          text: "SI ES UN NFA",
-          type: "error",
-          confirmButtonText: "Ok"
-        },function(isConfirm){
-            if(isConfirm){
-                NFA_probar_cadena(input,StartLink_position)
-            }
-        });
-        
-
+        NFA_probar_cadena(input,StartLink_position)
     }
     
 }
@@ -88,21 +85,7 @@ function contains(arreglo, value){
 }
 
 function is_DFA(){
-    var accepted_names =true;
-    for (var i = 0; i < this.nodes.length; i++) {
-        if(this.nodes[i].text == "")
-            accepted_names = false;
-    }
-    if(!accepted_names){
-        swal({
-          title: "Error!",
-          text: "NOMBRES DE NODOS INCOMPLETOS",
-          type: "error",
-          confirmButtonText: "Ok"
-        });
-        return false;
-    }
-
+    
     var alfabeto = [];
     for (var i = 0; i < this.links.length; i++) {
         var current_link_text = this.links[i].text.split(',')
@@ -173,24 +156,12 @@ function DFA_probar_cadena(input,StartLink_position){
         }
 
         show_probar_cadena();
-        if(current_node.isAcceptState){
-            swal({
-              title: "Aceptada!",
-              text: "LA CADENA ES ACEPTADA",
-              type: "success",
-              confirmButtonText: "Ok"
-            });
-            return true;
-        }
-        swal({
-          title: "Rechazada!",
-          text: "LA CADENA ES RECHAZADA",
-          type: "error",
-          confirmButtonText: "Ok"
-        });
-        return false;
+        
 }
 
+function hasDuplicates(array) {
+    return (new Set(array)).size !== array.length;
+}
 
 function show_probar_cadena(){
     if(order_current_position < order_of_nodes_and_links_to_travel_through.length){
@@ -201,12 +172,30 @@ function show_probar_cadena(){
         order_of_nodes_and_links_to_travel_through[order_current_position].animate("blue")
         order_current_position++;
         if(order_current_position === order_of_nodes_and_links_to_travel_through.length){
-            if(order_of_nodes_and_links_to_travel_through[order_current_position-1].isAcceptState){
+             if(order_of_nodes_and_links_to_travel_through[order_current_position-1].isAcceptState){
                 order_of_nodes_and_links_to_travel_through[order_current_position-1].animate("#58FA58")
+                setTimeout(function(){ 
+                    swal({
+                      title: "Aceptada!",
+                      text: "LA CADENA ES ACEPTADA",
+                      type: "success",
+                      confirmButtonText: "Ok"
+                    })
+
+                }, 1500);
 
             }else{            
                 order_of_nodes_and_links_to_travel_through[order_current_position-1].animate("red")
-            }
+                setTimeout(function(){ 
+                    swal({
+                      title: "Reachazada!",
+                      text: "LA CADENA ES RECHAZADA",
+                      type: "error",
+                      confirmButtonText: "Ok"
+                    })
+
+                }, 1500);
+            }           
         }
        
         draw();
@@ -718,7 +707,12 @@ function get_node_or_link_position(node_or_link_Array, node_or_link){
 
 }
 
-function convert_dfa_to_nfa(){
+function convert_dfa_to_nfa(){    
+    for (var i = 0; i < this.nodes.length; i++) {
+        if(!contains(this.nodes[i].text,"{"))
+            this.nodes[i].text = "{"+this.nodes[i].text+"}"
+    }
+    draw();
     
 }
 
