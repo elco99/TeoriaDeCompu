@@ -196,7 +196,7 @@ function show_probar_cadena(){
                       confirmButtonText: "Ok"
                     })
 
-                }, 1500);
+                }, 1000);
 
             }else{            
                 order_of_nodes_and_links_to_travel_through[order_current_position-1].animate("red")
@@ -208,7 +208,7 @@ function show_probar_cadena(){
                       confirmButtonText: "Ok"
                     })
 
-                }, 1500);
+                }, 1000);
             }           
         }
        
