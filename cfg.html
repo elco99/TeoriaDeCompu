@@ -21,6 +21,8 @@
 
     <!-- Morris Charts CSS -->
     <link href="css/plugins/morris.css" rel="stylesheet">
+    <link href="css/grammar.css" rel="stylesheet">
+    <link href="css/grammar_mod.css" rel="stylesheet">
 
     <!-- Custom Fonts -->
     <link href="font-awesome/css/font-awesome.min.css" rel="stylesheet" type="text/css">
@@ -45,14 +47,14 @@
                 <!-- Sidebar Menu Items - These collapse to the responsive navigation menu on small screens -->
                 <div class="collapse navbar-collapse navbar-ex1-collapse">
                     <ul class="nav navbar-nav side-nav">
-                        <li  class="active">
+                        <li>
                             <a data-toggle="collapse" data-target="#demo"><i class="fa fa-fw fa-dashboard"></i> Lenguajes Regulares <i class="fa fa-fw fa-caret-down"></i></a>
                             <ul id="demo" class="collapse">
-                                <li class="active">
+                                <li >
                                     <a href="index.html">DFA / NFA</a>
                                 </li>
                                 <li>
-                                    <a href="#">Regex</a>
+                                    <a href="regex.html">Regex</a>
                                 </li>
                                 <li>
                                     <a href="#">Convertir</a>
@@ -60,23 +62,23 @@
                             </ul>
                         </li>
 
-                        <li>
-                            <a data-toggle="collapse" data-target="#demo"><i class="fa fa-fw fa-dashboard"></i> Lenguajes de Contexto <i class="fa fa-fw fa-caret-down"></i></a>
-                            <ul id="demo" class="collapse">
+                        <li class="active">
+                            <a data-toggle="collapse" data-target="#demo2"><i class="fa fa-fw fa-dashboard"></i> Lenguajes de Contexto <i class="fa fa-fw fa-caret-down"></i></a>
+                            <ul id="demo2" class="collapse">
                                 <li>
                                     <a href="#">PDA</a>
                                 </li>
-                                <li>
-                                    <a href="#">CFG</a>
+                                <li class="active">
+                                    <a href="cfg.html">CFG</a>
                                 </li>
                                 <li>
-                                    <a href="#">CFG -> CNF</a>
+                                    <a href="cnf.html">CFG -> CNF</a>
                                 </li>
                             </ul>
                         </li>
 
                         <li>
-                            <a href="#"><i class="fa fa-fw fa-dashboard"></i>Lenguajes Decidibles</a>
+                            <a href="tm.html"><i class="fa fa-fw fa-dashboard"></i>Lenguajes Decidibles</a>
                         </li>
 
                     </ul>
@@ -94,46 +96,31 @@
                     <div class="row">
                         <div class="col-md-12 center">
                             <div id="dfa_canvas">
-                                <div id="cnfg_cng" width="800" height="600">
+                                <div id="cfg_div" width="800" height="600">
 
-                                  <div id="div_cfg " class="col-ms-12" >
+                                    <div id="div_cfg " class="col-ms-12" >
 
-                                    <h2> CFG </h2>
-                                    <textarea id="cfg_ta" "col-ms-4 " rows="6" cols="50" ></textarea>
+                                        <h2> CFG </h2>
+                                        <div id="current-grammar"></div>
+                                        <br>
+                                    </div>
+
+                                    <form class="form-horizontal" id="grammar" role="form"></form>
+                                    <div class="clearfix"></div>
+
+                                    <button id="new-production" type="button" class="btn btn-default btn-md " >
+                                        <span class="glyphicon glyphicon-plus"></span> Click here
+                                    </button>
+
+                                    <div class="clearfix"></div>
                                     <br>
-
-
-                                  </div>
-
-                                  <div class="col-ms-12 ">
-                                    <form>
-                                      <h4>Unitaria</h4>
-                                      <input id="unita" type="text" name="unitario" width="50" height="30">
-                                      <h4>Complemento</h4>
-                                      <input id="comple" type="text" name="complemento">
-                                    </form>
+                                    <input type= "text" id="test-input"  ></input>
                                     <br>
-
-                                  </div>
-
-                                  <div class="col-ms-6 ">
-                                    <input type="button" value="Agregar" onclick=" Agregar_cfg() " >
-
-                                    <input type="button" value="Convertir" onclick=" Conventir_cnf() " >
-                                    <br>
-
-                                  </div>
-
-                                  <div id="div_cnf" class="col-ms-12" >
-
-                                    <h2> CNF </h2>
-                                    <textarea id="cnf_ta" "col-ms-4" rows="10" cols="50"></textarea>
-                                  </div>
+                                    <input type="button" value="Convertir" id="test-string">
 
                             </div>
                         </div>
                     </div>
-
                 </div>
             </div><!--END PAGE WRAPPER -->
     </div> <!-- END WRAPPER -->
@@ -145,15 +132,8 @@
 
 
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.2/jquery.min.js"></script>
-    <script type="text/javascript" src="src/elements/Link.js"></script>
-
-    <script type="text/javascript" src="js/cfg_cnf.js"></script>
-    <script type="text/javascript" src="src/elements/Node.js"></script>
-    <script type="text/javascript" src="src/elements/SelfLink.js"></script>
-    <script type="text/javascript" src="src/elements/StartLink.js"></script>
-    <script type="text/javascript" src="src/elements/TemporaryLink.js"></script>
-    <script type="text/javascript" src="src/elements/Pointer.js"></script>
-    <script type="text/javascript" src="src/designer/fmsDesigner.js"></script>
+    <script type="text/javascript" src="src/elements/Link.js"></script>    
+    <script type="text/javascript" src="js/cfg.js"></script>
 </body>
 
 </html>
