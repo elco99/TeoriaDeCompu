@@ -8,7 +8,6 @@ var nfa_color_to_use = "blue";
 var line_to_follow_to_accepting_nfa = "";
 var one_line_to_follow_to_rejecting_nfa = "";
 function prueba_cadena(){
-    //console.log(this.links[0].nodeB)
     for (var i = 0; i < this.nodes.length; i++) {//clean all colors
         this.nodes[i].animate("white")
     }
@@ -19,9 +18,6 @@ function prueba_cadena(){
     line_to_follow_to_accepting_nfa = "";
     one_line_to_follow_to_rejecting_nfa = "";
     var input = document.getElementById('input_chain').value;
-	//console.log(this.nodes) 
-    //console.log(this.links);
-   // console.log(input)
 
     
     var StartLink_position = -1;
@@ -36,22 +32,49 @@ function prueba_cadena(){
 
     }
     if(StartLink_position === -1){
-        console.log("SE NECESITA UN ESTADO INICIAL")
+        swal({
+          title: "Error!",
+          text: "SE NECESITA UN ESTADO INICIAL",
+          type: "error",
+          confirmButtonText: "Ok"
+        });
         return false;
     }
     if(cont > 1){
-        console.log("SOLO DEBE DE TENER UN ESTADO INICIAL")
+        swal({
+          title: "Error!",
+          text: "SOLO DEBE DE TENER UN ESTADO INICIAL",
+          type: "error",
+          confirmButtonText: "Ok"
+        });
         return false;
     }
     
 
     if(is_DFA()){
-        console.log("SI ES UN DFA")
-        console.log(this.nodes)
-        DFA_probar_cadena(input,StartLink_position)
+        swal({
+          title: "DFA!",
+          text: "SI ES UN DFA",
+          type: "error",
+          confirmButtonText: "Ok"
+        },function(isConfirm){
+            if(isConfirm){
+                DFA_probar_cadena(input,StartLink_position)
+            }
+        });
+        
     }else{
-        console.log("ES NFA")
-        NFA_probar_cadena(input,StartLink_position)
+        swal({
+          title: "NFA!",
+          text: "SI ES UN NFA",
+          type: "error",
+          confirmButtonText: "Ok"
+        },function(isConfirm){
+            if(isConfirm){
+                NFA_probar_cadena(input,StartLink_position)
+            }
+        });
+        
 
     }
     
@@ -71,7 +94,12 @@ function is_DFA(){
             accepted_names = false;
     }
     if(!accepted_names){
-        console.log("NOMBRES DE NODOS INCOMPLETOS")
+        swal({
+          title: "Error!",
+          text: "NOMBRES DE NODOS INCOMPLETOS",
+          type: "error",
+          confirmButtonText: "Ok"
+        });
         return false;
     }
 
@@ -106,10 +134,7 @@ function is_DFA(){
                     }
                 }                
             }
-            //(this.links.node === current_node.text || this.links.nodeA.text == current_node.text)
         }
-        /*console.log(alfabeto_check)
-        console.log(alfabeto)*/
         if(alfabeto_check.length == alfabeto.length)
             acceptable_nodes++;
 
@@ -120,10 +145,6 @@ function is_DFA(){
 
 }
 function DFA_probar_cadena(input,StartLink_position){
-       /* order_structure.tipo = "Link";
-        order_structure.posicion = StartLink_position;
-        order_structure.text = this.links[StartLink_position].text;
-        order_of_nodes_and_links_to_travel_through.push(order_structure)*/
         var current_node = this.links[StartLink_position].node;        
         order_of_nodes_and_links_to_travel_through.push(this.links[StartLink_position]);
         order_of_nodes_and_links_to_travel_through.push(this.links[StartLink_position].node);
@@ -133,7 +154,6 @@ function DFA_probar_cadena(input,StartLink_position){
                 var current_link_text = this.links[j].text.split(',')
                 for (var k = 0; k < current_link_text.length; k++) {
                     if(current_link_text[k] === input[i]){
-                        //console.log(current_node.text)
                         if(this.links[j].nodeB !== undefined && this.links[j].nodeA.text === current_node.text){
                             current_node = this.links[j].nodeB;
 
@@ -152,13 +172,22 @@ function DFA_probar_cadena(input,StartLink_position){
             }
         }
 
-        //console.log(order_of_nodes_and_links_to_travel_through)
         show_probar_cadena();
         if(current_node.isAcceptState){
-            console.log("LA CADENA ES ACEPTADA")
+            swal({
+              title: "Aceptada!",
+              text: "LA CADENA ES ACEPTADA",
+              type: "success",
+              confirmButtonText: "Ok"
+            });
             return true;
         }
-        console.log("LA CADENA ES RECHAZADA")
+        swal({
+          title: "Rechazada!",
+          text: "LA CADENA ES RECHAZADA",
+          type: "error",
+          confirmButtonText: "Ok"
+        });
         return false;
 }
 
@@ -190,53 +219,32 @@ function makeRandomColor(){
     return '#'+(0x1000000+(Math.random())*0xffffff).toString(16).substr(1,6)
 }
 function NFA_probar_cadena(input,StartLink_position){
-    //construir el arbol
-    /*console.log("E(&(1 a):  ",E(delta("1","a")))
-    console.log("E(&(2 a):  ",E(delta("2","a")))
-    console.log("E(&(3 a):  ",E(delta("3","a")))
-    console.log("E(&(1 b):  ",E(delta("1","b")))
-    console.log("E(&(2 b):  ",E(delta("2","b")))
-    console.log("E(&(3 b):  ",E(delta("3","b")))
-
-
-    console.log("&^(1 a):  ",delta_gorrito(["1"],"a"))
-    console.log("&^(1,2 a):  ",delta_gorrito(["1","2"],"a"))
-    console.log("&^(1,3 a):  ",delta_gorrito(["1","3"],"a"))
-    console.log("&^(1,2,3 a):  ",delta_gorrito(["1,","2","3"],"a"))
-    console.log("&^(2 a):  ",delta_gorrito(["2"],"a"))
-    console.log("&^(2,3 a):  ",delta_gorrito(["2","3"],"a"))
-    console.log("&^(3 a):  ",delta_gorrito(["3"],"a"))
-
-    console.log("&^(1 b):  ",delta_gorrito(["1"],"b"))
-    console.log("&^(1,2 b):  ",delta_gorrito(["1","2"],"b"))
-    console.log("&^(1,2,3 b):  ",delta_gorrito(["1","2","3"],"b"))
-    console.log("&^(2 b):  ",delta_gorrito(["2"],"b"))
-    console.log("&^(2,3 b):  ",delta_gorrito(["2","3"],"b"))
-    console.log("&^(3 b):  ",delta_gorrito(["3"],"b"))
-    console.log("&^(1,3 b):  ",delta_gorrito(["1","3"],"b"))*/
-
 
     var current_node = this.links[StartLink_position].node;
     var tree=construct_tree(input,0,current_node)
-    console.log(tree);
-
     line_to_follow_to_accepting_nfa = ""; 
     one_line_to_follow_to_rejecting_nfa = ""; 
     var start_line = ""   
     get_tree_depth(tree,1,start_line)
-    //run_tree_depth(tree,1,input.length,start_line)
-    console.log(line_to_follow_to_accepting_nfa)
-        //show_probar_cadena_nfa();
-    // console.log(max_depth);
     if(line_to_follow_to_accepting_nfa!== "") {
         build_order_of_nodes_and_links_to_travel_through_for_nfa(line_to_follow_to_accepting_nfa);
         show_probar_cadena();
-        console.log("LA CADENA ES ACEPTADA")
+        swal({
+          title: "Aceptada!",
+          text: "LA CADENA ES ACEPTADA",
+          type: "success",
+          confirmButtonText: "Ok"
+        });
         return true;
     }
     build_order_of_nodes_and_links_to_travel_through_for_nfa(one_line_to_follow_to_rejecting_nfa);
     show_probar_cadena();
-    console.log("LA CADENA ES RECHAZADA")
+    swal({
+      title: "Rechazada!",
+      text: "LA CADENA ES RECHAZADA",
+      type: "error",
+      confirmButtonText: "Ok"
+    });
     return false;
 }
 function construct_tree(input,position_on_input,current_node){
@@ -251,7 +259,6 @@ function construct_tree(input,position_on_input,current_node){
         for (var i = 0; i < this.links.length; i++) {
             var current_link_text = this.links[i].text.split(',')
             for (var k = 0; k < current_link_text.length; k++) {
-                // console.log(position_on_input, this.links[i])
                 if(current_link_text[k] === input[position_on_input] ){// si el link tiene el input
                    
                     if(this.links[i] instanceof Link){// si no es un self-link o start-link
@@ -259,8 +266,6 @@ function construct_tree(input,position_on_input,current_node){
                            
                             if(!tree_contains(tree.children,this.links[i].nodeB)){
                                 tree.children.push(construct_tree(input,position_on_input+1,  this.links[i].nodeB))
-                              // var answer = setTimeOut(construct_tree,500, input,position_on_input+1,  this.links[i].nodeB)
-                              // tree.children.push(answer)
 
                             }
                             
@@ -271,8 +276,6 @@ function construct_tree(input,position_on_input,current_node){
 
                             if(!tree_contains(tree.children,this.links[i].node)){  
                                 tree.children.push(construct_tree(input,position_on_input+1, current_node)) 
-                                // var answer = setTimeOut(construct_tree,500, input,position_on_input+1,  current_node)
-                                // tree.children.push(answer) 
                                 
                             }
                            
@@ -286,8 +289,6 @@ function construct_tree(input,position_on_input,current_node){
 
                             if(!tree_contains(tree.children,this.links[i].nodeB)){
                                 tree.children.push(construct_tree(input,position_on_input,  this.links[i].nodeB))
-                                // var answer = setTimeOut(construct_tree,500, input,position_on_input,   this.links[i].nodeB)
-                                // tree.children.push(answer) 
                             }
                            
                         }
@@ -296,9 +297,6 @@ function construct_tree(input,position_on_input,current_node){
                             
                             if(!tree_contains(tree.children,this.links[i].node)) {
                                 tree.children.push(construct_tree(input,position_on_input, current_node))
-                                
-                                // var answer = setTimeOut(construct_tree,500, input,position_on_input,   current_node)
-                                // tree.children.push(answer) 
                             }
 
                            
@@ -314,7 +312,6 @@ function construct_tree(input,position_on_input,current_node){
 
 }
 function convert_nfa_to_dfa(){
-    console.log(this.links)
     // primero creamos Q del dfa a partir de los nodos del nfa
     var Q_dfa = [];// conjunto de estados de el dfa
     var alfabeto_dfa = [];//el alfabeto del dfa
@@ -333,7 +330,6 @@ function convert_nfa_to_dfa(){
     }
     Q_dfa = combinations(Q_dfa);
     Q_dfa.unshift(empty_set);// se le agrega el conjunto vacio al inicio, en este caso representado por phi
-    console.log(Q_dfa)
 
     // conseguimos el alfabeto del nfa, sin tomar en cuenta epsilon, este sera el alfabeto del dfa y aprovechamos
     // para conseguir el estado inicial del nfa para luego calcular el del dfa
@@ -341,7 +337,6 @@ function convert_nfa_to_dfa(){
         var link_text_split = this.links[i].text.split(',')
         if(this.links[i] instanceof StartLink){// es el inicial
             q0_nfa = this.links[i].node.text;
-            console.log(q0_nfa)
         }
         for (var j = 0; j < link_text_split.length; j++) {
             if(!contains(alfabeto_dfa,link_text_split[j]) && link_text_split[j] !== epsilon && link_text_split[j] !== ""){
@@ -350,8 +345,6 @@ function convert_nfa_to_dfa(){
         }
     }
     alfabeto_dfa.sort();
-    console.log(alfabeto_dfa)
-
     
 
     var espacio_entre_nodos = 150
@@ -417,8 +410,6 @@ function convert_nfa_to_dfa(){
 
     // ahora creamos el nodo inicial con su startlink
     q0_dfa = E(q0_nfa).toString();
-    console.log(q0_nfa);
-    console.log(q0_dfa)
     for (var i = 0; i < backup.nodes.length; i++) {
         if(backup.nodes[i].text === q0_dfa){
             var start_link = new StartLink(backup.nodes[i]);
@@ -433,17 +424,12 @@ function convert_nfa_to_dfa(){
     // por ultimo, si hay varios links saliendo de un estado y entrando al mismo estado los consolidaremos dentro de uno solo
     // separando cada valor de la transicion por comas
     for (var i = 0; i < backup.nodes.length; i++) {
-
-        // for (var j = 0; j < alfabeto_dfa.length; j++) {
-
             for (var j = 0; j < backup.links.length; j++) {
-
                 for (var k = 0; k < backup.links.length; k++) {
                    if(backup.links[j].node === backup.links[k].node && backup.links[j].nodeA === backup.links[k].nodeA
                         && backup.links[j].nodeB === backup.links[k].nodeB && j !== k 
                         && backup.links[j].text !== backup.links[k].text && !(backup.links[k] instanceof StartLink)
                         && !(backup.links[j] instanceof StartLink)){
-                        console.log(j,k)
                         //si todas se cumplen tienen los mismos objetivos pero no son el mismo link
                         //deben tener los mismos nodos y los mismos undefined indpenedientemente del tipo de link
                         backup.links[j].text +=","+backup.links[k].text
@@ -588,8 +574,6 @@ function calcularAnchorPoint(backup,i,k){
                 anchorPointY = (nodeBY - nodeAY)/2 + nodeAY -10;
 
             }
-            /*anchorPointX = (nodeAX - nodeBX)/2 + nodeBX
-            anchorPointY = backup.nodes[i].y - 30*/
         }
     }
     var point = {
@@ -622,10 +606,8 @@ function e_transitions_for_testing_strings(current_node){
     for (var i = 0; i < this.links.length; i++) {
         if(this.links[i] instanceof Link){// si no es un self-link o start-link
             if(this.links[i].nodeA.text === current_node.text && this.links[i].text === epsilon){// si el link contiene el input y sale del nodo actual                                
-                //console.log("entra",current_node)
                 states.push(this.links[i].nodeB)
                 var temp = e_transitions_for_testing_strings(this.links[i].nodeB)
-                // console.log(temp)
                 for (var k = 0; k < temp.length; k++) {                   
                     states.push(temp[k])
                 }
@@ -648,8 +630,6 @@ function get_tree_depth(tree,current_depth,line_to_get_here){
         var new_line_to_get_here = "" + line_to_get_here + "," + tree.text;
     else
         var new_line_to_get_here = tree.text;
-    console.log("len " ,tree.children.length  ,"acpt " ,tree.isAcceptState ,"c_d ",current_depth ,"m_d",max_depth, "line: ",new_line_to_get_here
-            ,"p-line: ", line_to_get_here)
     if(tree.children.length === 0 && tree.isAcceptState && current_depth === max_depth){//es hoja, aceptada y tiene la maxima longitud
         line_to_follow_to_accepting_nfa = new_line_to_get_here;
     }else if(tree.children.length === 0 && one_line_to_follow_to_rejecting_nfa.length < new_line_to_get_here.length){
@@ -699,9 +679,6 @@ function contains(array,value){
 }
 function tree_contains(children, node){
     for (var i = 0; i < children.length; i++) {
-
-    // console.log(children[i])
-
         if(children[i].text === node.text){
             return true
         }
@@ -710,8 +687,7 @@ function tree_contains(children, node){
 }
 function contains_for_final_states(dfa_array, nfa_state_name){
     nfa_state_name_split = nfa_state_name.split(',')
-    for (var i = 0; i < dfa_array.length; i++) {
-        
+    for (var i = 0; i < dfa_array.length; i++) {        
         for (var j = 0; j < nfa_state_name_split.length; j++) {
             if(dfa_array[i] === nfa_state_name[j])
                 return true;
@@ -742,8 +718,17 @@ function get_node_or_link_position(node_or_link_Array, node_or_link){
 
 }
 
+function convert_dfa_to_nfa(){
+    
+}
+
 function save(){
-    console.log(saveBackup())
+    swal({
+      title: "Copy&Paste!",
+      text: saveBackup(),
+      type: "success",
+      confirmButtonText: "Ok"
+    });
 }
 function load(){
     this.nodes = [];

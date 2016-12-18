@@ -1,3 +1,6 @@
+var node_amount = 0;
+var order_of_nodes_and_links_to_travel_through = []
+
 function TM(nodes, links, user_input) {
     this.states = nodes.slice(); // obtiene todos los nodos
     this.transitions = links.slice(); // obtiene todas las transiciones
@@ -23,7 +26,7 @@ function TM(nodes, links, user_input) {
 
 
 TM.prototype.getStartTransition = function() { // metodo que devuelve el nodo inicial
-    for (var i = 0; i < this.transitions.length; i++) //recorre todas las transiciones y devuelve la que llega a 1 nodo pero no sale de otro
+    for (var i = 0; i < this.transitions.length; i++) //recorre todas las transiciones y devuelve el que tenga el StartLink
         if (this.transitions[i] instanceof StartLink)
             return this.transitions[i];
 
@@ -111,11 +114,14 @@ TM.prototype.getRejectState = function() {
 };
 
 TM.prototype.probar_cadena = function() {
+    for (var i = 0; i < this.states.length; i++) { //limpia todo los colores
+        this.states[i].animate("white");
+    }
+    draw();
+    order_of_nodes_and_links_to_travel_through = []; 
+    node_amount = 0;
     var current_tape_index = 1;
-    var current_state = this.initial_state.text,
-        current_transition = null,
-        temp_tape = this.tape,
-        state_change = false;;
+    var current_state = this.initial_state.text, current_transition = null,temp_tape = this.tape, state_change = false;
     while (current_state != this.accept_state.text && current_state != this.reject_state.text) { //controla hasta que llegue a un estado de aceptacion o rechazo
 
         for (var i = 1; i < temp_tape.length - 1; i++) { // recorre la copia del tape
@@ -123,11 +129,10 @@ TM.prototype.probar_cadena = function() {
 
             for (var j = 0; j < this.transition_table.length; j++) { // for que controla las transiciones
                 current_transition = this.transition_table[j]; // la transicion sub j
-
                 if ((current_transition.start_state == current_state) && (current_transition.input_symbol == temp_tape.charAt(current_tape_index))) {  //verifica hasta encontrar el nodo de inicio
                     current_state = current_transition.final_state.valueOf(); //  a current le asigna  a lo que debe de pasar
                     this.states_path_text.push(current_state); //agrega el estado al arreglo
-                    this.transitions_path_text.push(current_transition); //grega la transicion
+                    this.transitions_path_text.push(current_transition); //agrega la transicion
 
                     state_change = true;
                     temp_tape = temp_tape.substr(0, current_tape_index) + current_transition.set_in_tape + temp_tape.substr(current_tape_index + 1);
@@ -155,15 +160,41 @@ TM.prototype.probar_cadena = function() {
     }
 
     if (current_state == this.accept_state.text) {
-        console.log("si");
-        alert("La cadena es aceptada");
+        swal({
+          title: "Aceptado!",
+          text: "La cadena es aceptada!",
+          type: "success",
+          confirmButtonText: "Ok"
+        },function(isConfirm){
+          if (isConfirm) {
+            animation();
+          }
+        });
     } else {
-        console.log("no");
-        alert("La cadena es rechazada");
+        swal({
+          title: "Rechazado!",
+          text: "La cadena es rechazada!",
+          type: "error",
+          confirmButtonText: "Ok"
+        },function(isConfirm){
+          if (isConfirm) {
+            animation();
+          }
+        });
     }
 
     this.states_path = this.getStatesFromText();
     this.transitions_path = this.getTransitionsFromText();
+    
+    for (var i = 0; i < this.transitions_path.length; i++) {//mete las transiciones para poder hacer el cambio de color
+        if (this.transitions_path[i] instanceof SelfLink) {
+            order_of_nodes_and_links_to_travel_through.push(this.transitions_path[i]);
+            order_of_nodes_and_links_to_travel_through.push(this.transitions_path[i].node)
+        }else if(this.transitions_path[i].nodeB !== undefined){
+            order_of_nodes_and_links_to_travel_through.push(this.transitions_path[i]);
+            order_of_nodes_and_links_to_travel_through.push(this.transitions_path[i].nodeB)
+        };
+    };
 };
 
 
@@ -218,17 +249,148 @@ TM.prototype.getTransitionsFromText = function() {
     return ret_val;
 };
 
+TM.prototype.not_tm = function() { 
+    var trans_text = nodes_text = accept_state = false;
+    var error_message = "";
+
+    if (accept_state = (this.accept_state == null))
+        error_message += "\n* La máquina requiere de un estado de aceptación\n";
+    if (!(trans_text = this.validate_transitions()))
+        error_message += "\n* Las transiciones tienen que tener la forma a->b,c\n"
+    if (!(nodes_text = this.validate_nodes()))
+        error_message += "\n* Todos los estados tienen que tener nombre\n";
+
+    if (!trans_text || !nodes_text || accept_state) {
+       swal({
+          title: "Error!",
+          text: error_message,
+          type: "error",
+          confirmButtonText: "Ok"
+        });
+        return false;
+    }
+
+    return true;
+};
+
+TM.prototype.validate_transitions = function() { 
+    var pattern = /^[a-zA-Z0-9_#]->[a-zA-Z0-9_#],(R|r|L|l)$/;
+    for (var i = 0; i < this.transitions.length; i++) {
+        if (!pattern.test(this.transitions[i].text) && !(this.transitions[i] instanceof StartLink))
+            return false;
+    }
+    return true;
+};
+
+TM.prototype.validate_nodes = function() {
+    for (var i = 0; i < this.states.length; i++)
+        if (this.states[i].text == null || this.states[i].text == "")
+            return false;
+    return true;
+};
+
+function validations() { 
+    var has_errors = false,
+        error_message = "";
+
+    if (nodes.length == 0) {
+        error_message += "\n* La máquina ocupa estados\n";
+        has_errors = true;
+    }
+    if (!is_startLink()) {
+        error_message += "\n* La máquina ocupa estado inicial\n";
+        has_errors = true;
+    }
+    if (links.length == 0) {
+        error_message += "\n* La máquina ocupa transiciones\n";
+        has_errors = true;
+    } else if (!Links_has_text()) {
+        error_message += "\n* Las transiciones ocupan texto\n";
+        has_errors = true;
+    }
+
+    return {
+        has_errors: has_errors,
+        error_message: error_message
+    };
+};
+
+function is_startLink() { 
+    for (var i = 0; i < links.length; i++)
+        if (links[i] instanceof StartLink)
+            return true;
+    return false;
+}
+
+function Links_has_text() {
+    for (var i = 0; i < links.length; i++)
+        if ((links[i].text == null || links[i].text == "") && !(links[i] instanceof StartLink))
+            return false;
+    return true;
+}
 
 
+function starting_color() { 
+    for (var i = 0; i < nodes.lenght; i++)
+        nodes[i].strokeStyle = "white";
+    for (var i = 0; i < links.length; i++)
+        links[i].strokeStyle = "white";
+}
 
+function start_probar_cadena() { 
+    var generic_validations = validations();
+    
+    if (!generic_validations.has_errors) {
+        starting_color();
+        var tm = new TM(nodes, links, document.getElementById('cadena').value);
+        if (tm.not_tm()) {
+            tm.probar_cadena();
+        }
+    } else {
+        swal({
+          title: "Error!",
+          text: generic_validations.error_message,
+          type: "error",
+          confirmButtonText: "Ok"
+        });
+    }
+};
+
+function animation(){
+    if(node_amount < order_of_nodes_and_links_to_travel_through.length){
+        if(node_amount > 0){
+            order_of_nodes_and_links_to_travel_through[node_amount-1].animate("white")
+        }
+            
+        order_of_nodes_and_links_to_travel_through[node_amount].animate("blue")
+        node_amount++;
+        if(node_amount === order_of_nodes_and_links_to_travel_through.length){
+            if(order_of_nodes_and_links_to_travel_through[node_amount-1].isAcceptState){
+                order_of_nodes_and_links_to_travel_through[node_amount-1].animate("#58FA58")
+
+            }else{            
+                order_of_nodes_and_links_to_travel_through[node_amount-1].animate("red")
+            }
+        }
+       
+        draw();
+        setTimeout(animation, 500);        
+    }else{
+    }
+
+}
 
 function load() {
-    nodes = [];
-    links = [];
-    draw();
+    this.nodes = [];
+    this.links = [];
     restoreBackup(document.getElementById("load_inpupt").value)
 }
 
 function save(){
-    console.log(saveBackup())
+    swal({
+      title: "Copy&Paste!",
+      text: saveBackup(),
+      type: "success",
+      confirmButtonText: "Ok"
+    });
 }

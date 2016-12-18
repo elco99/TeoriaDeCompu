@@ -1262,11 +1262,26 @@ function testCFG() {
 
     // Call escapeHTML() from grammar.js
     if(parses.length == 0) {
-      alert("No")
+      swal({
+        title: "Rechazado!",
+        text: "La cadena es rechazada!",
+        type: "error",
+        confirmButtonText: "Ok"
+      });
     }else if(parses.length == 1) {
-      alert("Yes")
+      swal({
+        title: "Aceptado!",
+        text: "La cadena es aceptada!",
+        type: "success",
+        confirmButtonText: "Ok"
+      });
     }else {
-      alert("Yes")
+      swal({
+        title: "Aceptado!",
+        text: "La cadena es aceptada!",
+        type: "success",
+        confirmButtonText: "Ok"
+      });
     }
 
   }
