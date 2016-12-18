@@ -245,7 +245,7 @@
 
           //console.log(nueva_unitaria);
           antigua= cont_complet_split[k]; // como era el conjunto
-          cambio =cont_complet_split[k].slice(0,2); // saco lo que agregare de complemento
+          cambio =cont_complet_split[k].slice(1,3); // saco lo que agregare de complemento
           a_cambiar = str_comple.replace(cambio,nueva_unitaria); // es lo que me queda de complemento
           complemento[i]=a_cambiar;
           //console.log(complemento[i]+ " el complemento como quedo con i=  " +i);
