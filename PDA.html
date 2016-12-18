@@ -85,51 +85,52 @@
             </div>
             <!-- /.navbar-collapse -->
         </nav>
-          <div class="PDA">
+        <div class="PDA">
             <div class="col-md-12 col-md-offset-1 ">
                 <div class="row">
                     <h1>PDA</h1>
                     <input id="input_textPDA" type="text">
-                    <button type="button" onclick="disableMouseOverPDACanvas()">Procesar Cadena</button>
-                    <button type="button" onclick="Prueba()">Ejemplo 1</button>
-                    <h4 class="StackTitle">Stack:</h4>
-                    <div id="stack">
-                        <table>
-                          <tr id="stack-row"></tr>
-                        </table>
-                      </div>
+                    <button type="button" onclick="Prueba(); TryCadena();">Procesar Cadena</button>
+                </div>
+                <div class="row">
+                    <div class="col-md-2">
+                        <h4 class="StackTitle">Stack:</h4>
                     </div>
-
-
+                    <div class="col-md-4">
+                        <p id="cambio" class="StackTitle"></p>
+                    </div>
+                </div>
+                <div id="stack">
+                    <table>
+                        <tr id="stack-row"></tr>
+                    </table>
+                </div>
             </div>
-            <div class="col-md-9">
-
-              </div>
             <div class="col-md-9 center">
-              <div id="pda_canvas">
-                  <canvas id="canvas" width="800" height="600">
+                <div id="pda_canvas">
+                    <canvas id="canvas" width="800" height="600">
                       <span class="error">Your browser does not support<br>the HTML5 &lt;canvas&gt; element</span>
                   </canvas>
-              </div>
-              <div id="input_animation">
-                  <div style='text-decoration:line-through;' class="processed"></div>
-                  <div class="unprocessed"></div>
-              </div>
+                </div>
+                <div id="input_animation">
+                    <div style='text-decoration:line-through;' class="processed"></div>
+                    <div class="unprocessed"></div>
+                </div>
             </div>
         </div>
-          <!--END PAGE WRAPPER -->
+        <!--END PAGE WRAPPER -->
     </div>
-        <script src="js/jquery.js"></script>
-        <script src="js/bootstrap.min.js"></script>
-        <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.2/jquery.min.js"></script>
-        <script type="text/javascript" src="src/elements/Link.js"></script>
-        <script type="text/javascript" src="js/PDA.js"></script>
-        <script type="text/javascript" src="src/elements/Node.js"></script>
-        <script type="text/javascript" src="src/elements/SelfLink.js"></script>
-        <script type="text/javascript" src="src/elements/StartLink.js"></script>
-        <script type="text/javascript" src="src/elements/TemporaryLink.js"></script>
-        <script type="text/javascript" src="src/elements/Pointer.js"></script>
-        <script type="text/javascript" src="src/designer/fmsDesigner.js"></script>
+    <script src="js/jquery.js"></script>
+    <script src="js/bootstrap.min.js"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.2/jquery.min.js"></script>
+    <script type="text/javascript" src="src/elements/Link.js"></script>
+    <script type="text/javascript" src="js/PDA.js"></script>
+    <script type="text/javascript" src="src/elements/Node.js"></script>
+    <script type="text/javascript" src="src/elements/SelfLink.js"></script>
+    <script type="text/javascript" src="src/elements/StartLink.js"></script>
+    <script type="text/javascript" src="src/elements/TemporaryLink.js"></script>
+    <script type="text/javascript" src="src/elements/Pointer.js"></script>
+    <script type="text/javascript" src="src/designer/fmsDesigner.js"></script>
 </body>
 
 </html>
