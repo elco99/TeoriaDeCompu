@@ -1,4 +1,5 @@
 function Link(a, b) {
+	this.change_color = false;
 	this.nodeA = a;
 	this.nodeB = b;
 	this.text = '';
@@ -71,12 +72,14 @@ Link.prototype.getEndPointsAndCircle = function() {
 		'isReversed': isReversed,
 	};
 };
-Link.prototype.animate = function(color,size){
-	this.strokeStyle = color;
+Link.prototype.animate = function(color){
+	this.strokeStyle = color
+	this.change_color = true;
 };
 Link.prototype.draw = function(c) {
 	var stuff = this.getEndPointsAndCircle();
 	// draw arc
+
 	c.beginPath();
 	if(stuff.hasCircle) {
 		c.arc(stuff.circleX, stuff.circleY, stuff.circleRadius, stuff.startAngle, stuff.endAngle, stuff.isReversed);
@@ -84,14 +87,21 @@ Link.prototype.draw = function(c) {
 		c.moveTo(stuff.startX, stuff.startY);
 		c.lineTo(stuff.endX, stuff.endY);
 	}
-	c.strokeStyle = this.strokeStyle?this.strokeStyle:'white';
+	if(this.change_color){
+		c.strokeStyle = this.strokeStyle;
+	}
+	else{
+		c.strokeStyle = this.strokeStyle?this.strokeStyle:'white';
+	}
 	c.stroke();
 	// draw the head of the arrow
 	if(stuff.hasCircle) {
-		drawArrow(c, stuff.endX, stuff.endY, stuff.endAngle - stuff.reverseScale * (Math.PI / 2));
+		drawArrow(c, stuff.endX, stuff.endY, stuff.endAngle - stuff.reverseScale * (Math.PI / 2),this.change_color, this.strokeStyle);
 	} else {
-		drawArrow(c, stuff.endX, stuff.endY, Math.atan2(stuff.endY - stuff.startY, stuff.endX - stuff.startX));
+		drawArrow(c, stuff.endX, stuff.endY, Math.atan2(stuff.endY - stuff.startY, stuff.endX - stuff.startX),this.change_color, this.strokeStyle);
 	}
+
+	// this.change_color = false;	
 	// draw the text
 	if(stuff.hasCircle) {
 		var startAngle = stuff.startAngle;
