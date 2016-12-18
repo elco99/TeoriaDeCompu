@@ -13,8 +13,14 @@ function TM(nodes, links, user_input) {
     this.accept_state = this.getAcceptState();
     this.reject_state = this.getRejectState();
 
+    this.configurations = [];
+    this.states_path_text = [];
+    this.states_path = [];
+    this.transitions_path_text = [];
+    this.transitions_path = [];
 
 }
+
 
 TM.prototype.getStartTransition = function() { // metodo que devuelve el nodo inicial
     for (var i = 0; i < this.transitions.length; i++) //recorre todas las transiciones y devuelve la que llega a 1 nodo pero no sale de otro
@@ -103,6 +109,117 @@ TM.prototype.getRejectState = function() {
 
     return ret_val;
 };
+
+TM.prototype.probar_cadena = function() {
+    var current_tape_index = 1;
+    var current_state = this.initial_state.text,
+        current_transition = null,
+        temp_tape = this.tape,
+        state_change = false;;
+    while (current_state != this.accept_state.text && current_state != this.reject_state.text) { //controla hasta que llegue a un estado de aceptacion o rechazo
+
+        for (var i = 1; i < temp_tape.length - 1; i++) { // recorre la copia del tape
+            state_change = false;
+
+            for (var j = 0; j < this.transition_table.length; j++) { // for que controla las transiciones
+                current_transition = this.transition_table[j]; // la transicion sub j
+
+                if ((current_transition.start_state == current_state) && (current_transition.input_symbol == temp_tape.charAt(current_tape_index))) {  //verifica hasta encontrar el nodo de inicio
+                    current_state = current_transition.final_state.valueOf(); //  a current le asigna  a lo que debe de pasar
+                    this.states_path_text.push(current_state); //agrega el estado al arreglo
+                    this.transitions_path_text.push(current_transition); //grega la transicion
+
+                    state_change = true;
+                    temp_tape = temp_tape.substr(0, current_tape_index) + current_transition.set_in_tape + temp_tape.substr(current_tape_index + 1);
+
+                    console.log(temp_tape.substr(0, current_tape_index) + "<" + current_state + ">" + temp_tape.substr(current_tape_index));
+                    this.configurations.push(temp_tape.substr(0, current_tape_index) + "<" + current_state + ">" + temp_tape.substr(current_tape_index)); //agrega el cambio que hubo en tape
+
+                    if (current_transition.move_to === "R" || current_transition.move_to === "r") // realiza el movimiento a la derecha en el tape
+                        current_tape_index++;
+                    else if (current_transition.move_to === "L" || current_transition.move_to === "l") // realiza el movimiento a la izquierda del tape
+                        current_tape_index--;
+
+                    break;
+                }
+
+            }
+
+        }
+
+        if (current_state == this.accept_state.text || current_state === this.reject_state.text) // verifica que llego a un estado ya sea de aceptacion o rechazo
+            state_change = true;
+
+        if (!state_change)
+            current_state = this.reject_state.text;
+    }
+
+    if (current_state == this.accept_state.text) {
+        console.log("si");
+        alert("La cadena es aceptada");
+    } else {
+        console.log("no");
+        alert("La cadena es rechazada");
+    }
+
+    this.states_path = this.getStatesFromText();
+    this.transitions_path = this.getTransitionsFromText();
+};
+
+
+TM.prototype.getStatesFromText = function() {  // devuelve el arreglo de el nombre de los nodos
+    var ret_val = [];
+    for (var i = 0; i < this.states_path_text.length; i++)
+        for (var j = 0; j < this.states.length; j++)
+            if (this.states[j].text === this.states_path_text[i]) {
+                ret_val.push(this.states[j]);
+                break;
+            }
+    return ret_val;
+};
+
+TM.prototype.getTransitionsFromText = function() {
+    var ret_val = [],
+        current_transition = null,
+        current_text_trans = null,
+        transition_input_and_movement = null;
+    for (var i = 0; i < this.transitions_path_text.length; i++) // recorre el texto de las transiciones
+        for (var j = 0; j < this.transitions.length; j++) { // recorre transiciones
+            current_transition = this.transitions[j];
+            current_text_trans = this.transitions_path_text[i];
+            if (!(current_transition instanceof StartLink)) { //verifica que no sea la transicion de inicio
+
+                if (current_transition instanceof Link) // verifica que sea una transicion de un nodo a otro
+                    transition_nodes = [current_transition.nodeA.text, current_transition.nodeB.text];
+                else if (current_transition instanceof SelfLink) // verifica que sea una transicion asi mismo
+                    transition_nodes = [current_transition.node.text, current_transition.node.text];
+
+                transition_input_and_movement = this.getDelta(current_transition); // devuelve la info de la transicion
+
+                new_transition = { //crea la nueva transicion, con la info obtenida
+                    start_state: transition_nodes[0],
+                    input_symbol: transition_input_and_movement[0],
+                    set_in_tape: transition_input_and_movement[1],
+                    move_to: transition_input_and_movement[2],
+                    final_state: transition_nodes[1]
+                };
+
+                if (new_transition.start_state == current_text_trans.start_state &&
+                    new_transition.final_state == current_text_trans.final_state &&
+                    new_transition.input_symbol == current_text_trans.input_symbol &&
+                    new_transition.set_in_tape == current_text_trans.set_in_tape &&
+                    new_transition.move_to == current_text_trans.move_to) { // verifica que sea la misma que se encontro
+                    ret_val.push(this.transitions[j]);
+                    break;
+                }
+            }
+        }
+
+    return ret_val;
+};
+
+
+
 
 
 function load() {
