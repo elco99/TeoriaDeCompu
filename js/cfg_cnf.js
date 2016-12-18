@@ -290,3 +290,8 @@
       document.getElementById("cnf_ta").value += "\n";
     }
   }
+
+
+  reload_page = function() {
+    location.reload();
+  }
