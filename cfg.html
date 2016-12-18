@@ -21,6 +21,8 @@
 
     <!-- Morris Charts CSS -->
     <link href="css/plugins/morris.css" rel="stylesheet">
+    <link href="css/grammar.css" rel="stylesheet">
+    <link href="css/grammar_mod.css" rel="stylesheet">
 
     <!-- Custom Fonts -->
     <link href="font-awesome/css/font-awesome.min.css" rel="stylesheet" type="text/css">
@@ -70,13 +72,13 @@
                                     <a href="cfg.html">CFG</a>
                                 </li>
                                 <li>
-                                    <a href="cnf2.html">CFG -> CNF</a>
+                                    <a href="cnf.html">CFG -> CNF</a>
                                 </li>
                             </ul>
                         </li>
 
                         <li>
-                            <a href="#"><i class="fa fa-fw fa-dashboard"></i>Lenguajes Decidibles</a>
+                            <a href="tm.html"><i class="fa fa-fw fa-dashboard"></i>Lenguajes Decidibles</a>
                         </li>
 
                     </ul>
@@ -94,36 +96,28 @@
                     <div class="row">
                         <div class="col-md-12 center">
                             <div id="dfa_canvas">
-                                <div id="cnfg_cng" width="800" height="600">
+                                <div id="cfg_div" width="800" height="600">
 
                                     <div id="div_cfg " class="col-ms-12" >
 
                                         <h2> CFG </h2>
-                                        <textarea id="cfg_ta" "col-ms-4 " rows="6" cols="50" ></textarea>
+                                        <div id="current-grammar"></div>
                                         <br>
                                     </div>
 
-                                    <div class="col-ms-12 ">
-                                        <form>
-                                            <h2>Relaciones</h2>
-                                            <input id="unita" type="text" name="unitario" width="50" height="30">
-                                            <span>----></span>
-                                            <input id="comple" type="text" name="complemento">
-                                        </form>
-                                        <br>
-                                    </div>
+                                    <form class="form-horizontal" id="grammar" role="form"></form>
+                                    <div class="clearfix"></div>
 
-                                    <div class="col-ms-6 ">
-                                        <input type="button" value="Agregar" onclick=" addRules(unita,comple) " >
-                                    </div>
+                                    <button id="new-production" type="button" class="btn btn-default btn-md " >
+                                        <span class="glyphicon glyphicon-plus"></span> Click here
+                                    </button>
 
-                                    <div>
-                                        <br>
-                                        <h4>Cadena</h4>
-                                        <input id="input" type="text" name="input" width="50" height="30">
-                                        <br>
-                                        <input type="button" value="Probar Cadena" onclick=" generate() " >
-                                    </div>
+                                    <div class="clearfix"></div>
+                                    <br>
+                                    <input type= "text" id="test-input"  ></input>
+                                    <br>
+                                    <input type="button" value="Convertir" id="test-string">
+
                             </div>
                         </div>
                     </div>
@@ -138,8 +132,7 @@
 
 
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.2/jquery.min.js"></script>
-    <script type="text/javascript" src="src/elements/Link.js"></script>
-
+    <script type="text/javascript" src="src/elements/Link.js"></script>    
     <script type="text/javascript" src="js/cfg.js"></script>
 </body>
 
