@@ -24,7 +24,7 @@
 
     <!-- Custom Fonts -->
     <link href="font-awesome/css/font-awesome.min.css" rel="stylesheet" type="text/css">
-
+    <link rel="stylesheet" type="text/css" href="sweetalert-master/dist/sweetalert.css">
     <link rel="stylesheet" type="text/css" href="css/mainComponents.css">
 
 </head>
@@ -53,9 +53,6 @@
                                 </li>
                                 <li>
                                     <a href="regex.html">Regex</a>
-                                </li>
-                                <li>
-                                    <a href="#">Convertir</a>
                                 </li>
                             </ul>
                         </li>
@@ -88,7 +85,7 @@
             <div class = "row" id = "input" >
                         <div class="col-md-12 center">
                             <input type= "text" id = "cadena"></input>
-                            <button onclick="disableCanvas()" >click</button>
+                            <button onclick="start_probar_cadena()" >click</button>
                             <button onclick="save()" >save</button>
                             <input type= "text" id = "load_inpupt"></input>
                             <button onclick="load()" >load</button>
@@ -118,13 +115,16 @@
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.2/jquery.min.js"></script>
     <script type="text/javascript" src="src/elements/Link.js"></script>
 
-    <script type="text/javascript" src="js/tm.js"></script>
+    
     <script type="text/javascript" src="src/elements/Node.js"></script>
     <script type="text/javascript" src="src/elements/SelfLink.js"></script>
     <script type="text/javascript" src="src/elements/StartLink.js"></script>
     <script type="text/javascript" src="src/elements/TemporaryLink.js"></script>
     <script type="text/javascript" src="src/elements/Pointer.js"></script>
     <script type="text/javascript" src="src/designer/fmsDesigner.js"></script>
+    <script src="sweetalert-master/dist/sweetalert.min.js"></script>
+    <script type="text/javascript" src="js/tm.js"></script>
+    
 </body>
 
 </html>

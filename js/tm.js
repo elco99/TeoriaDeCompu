@@ -160,11 +160,27 @@ TM.prototype.probar_cadena = function() {
     }
 
     if (current_state == this.accept_state.text) {
-        console.log("si");
-        alert("La cadena es aceptada");
+        swal({
+          title: "Aceptado!",
+          text: "La cadena es aceptada!",
+          type: "success",
+          confirmButtonText: "Ok"
+        },function(isConfirm){
+          if (isConfirm) {
+            animation();
+          }
+        });
     } else {
-        console.log("no");
-        alert("La cadena es rechazada");
+        swal({
+          title: "Rechazado!",
+          text: "La cadena es rechazada!",
+          type: "error",
+          confirmButtonText: "Ok"
+        },function(isConfirm){
+          if (isConfirm) {
+            animation();
+          }
+        });
     }
 
     this.states_path = this.getStatesFromText();
@@ -179,7 +195,6 @@ TM.prototype.probar_cadena = function() {
             order_of_nodes_and_links_to_travel_through.push(this.transitions_path[i].nodeB)
         };
     };
-    console.log(order_of_nodes_and_links_to_travel_through)
 };
 
 
@@ -236,7 +251,7 @@ TM.prototype.getTransitionsFromText = function() {
 
 TM.prototype.not_tm = function() { 
     var trans_text = nodes_text = accept_state = false;
-    var error_message = "Validaciones";
+    var error_message = "";
 
     if (accept_state = (this.accept_state == null))
         error_message += "\n* La máquina requiere de un estado de aceptación\n";
@@ -246,7 +261,12 @@ TM.prototype.not_tm = function() {
         error_message += "\n* Todos los estados tienen que tener nombre\n";
 
     if (!trans_text || !nodes_text || accept_state) {
-        alert(error_message);
+       swal({
+          title: "Error!",
+          text: error_message,
+          type: "error",
+          confirmButtonText: "Ok"
+        });
         return false;
     }
 
@@ -271,18 +291,16 @@ TM.prototype.validate_nodes = function() {
 
 function validations() { 
     var has_errors = false,
-        error_message = "Validaciones:";
+        error_message = "";
 
     if (nodes.length == 0) {
         error_message += "\n* La máquina ocupa estados\n";
         has_errors = true;
     }
-
     if (!is_startLink()) {
         error_message += "\n* La máquina ocupa estado inicial\n";
         has_errors = true;
     }
-
     if (links.length == 0) {
         error_message += "\n* La máquina ocupa transiciones\n";
         has_errors = true;
@@ -319,24 +337,22 @@ function starting_color() {
         links[i].strokeStyle = "white";
 }
 
-function disableCanvas() { 
+function start_probar_cadena() { 
     var generic_validations = validations();
     
     if (!generic_validations.has_errors) {
         starting_color();
         var tm = new TM(nodes, links, document.getElementById('cadena').value);
         if (tm.not_tm()) {
-            canvas.onmousedown = function(e) {};
-            canvas.ondblclick = function(e) {};
-            canvas.onmousemove = function(e) {};
-            canvas.onmouseup = function(e) {};
-
-
             tm.probar_cadena();
-            animation();
         }
     } else {
-        alert(generic_validations.error_message);
+        swal({
+          title: "Error!",
+          text: generic_validations.error_message,
+          type: "error",
+          confirmButtonText: "Ok"
+        });
     }
 };
 
@@ -371,5 +387,10 @@ function load() {
 }
 
 function save(){
-    console.log(saveBackup())
+    swal({
+      title: "Copy&Paste!",
+      text: saveBackup(),
+      type: "success",
+      confirmButtonText: "Ok"
+    });
 }
