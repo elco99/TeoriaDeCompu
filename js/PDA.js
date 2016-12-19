@@ -189,7 +189,6 @@ PDA.prototype.Camino = function(path, fromNode) {
                                 branches: {},
                                 conecciones: coneccionesTemp
                             }, transitionTo);
-
                             path.branches[transitionTo + ";" + k].conecciones = coneccionesTemp;
                         }
                     }
