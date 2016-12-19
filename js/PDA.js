@@ -1,40 +1,32 @@
 function ProbarCadena(field) {
-  if (field.value != '') {
-    console.log("Entre");
-    var pda = new PDA(nodes, links);
-    pda.Color_rever();
-    if (Validacion(pda)) {
-        canvas.onmousedown = function(e) {};
-        canvas.ondblclick = function(e) {};
-        canvas.onmousemove = function(e) {};
-        canvas.onmouseup = function(e) {};
-    }
-    pda.posiblePaths = [];
-    var accepted = false;
-    var allPaths = pda.Camino({
-        input: document.getElementById('input_textPDA').value,
-        branches: {},
-        conecciones: []
-    }, pda.estado_inicial.text);
-    if (pda.posiblePaths.length > 0) {
-        pda.evaluarCadena(document.getElementById('input_textPDA').value, pda.posiblePaths[0], 0);
+    if (field.value != '') {
+        var pda = new PDA(nodes, links);
+        if (Validacion(pda)) {
+            pda.posiblePaths = [];
+            var accepted = false;
+            var allPaths = pda.Camino({
+                input: document.getElementById('input_textPDA').value,
+                branches: {},
+                conecciones: []
+            }, pda.estado_inicial.text);
+            if (pda.posiblePaths.length > 0) {
+                pda.evaluarCadena(document.getElementById('input_textPDA').value, pda.posiblePaths[0], 0);
+            }
+        }
     } else {
-        document.getElementById("cambio").innerHTML = "No existen caminos";
+      $("#cambio").text ("No ingreso texto");
     }
-  }else{
-    document.getElementById("cambio").innerHTML = "No ingreso texto";
-  }
-
 };
 
 function Validacion(pda) {
+    console.log("entre");
     if (pda.estados.length == 0) {
-        document.getElementById("cambio").innerHTML = "La máquina esta indefinida";
+        $("#cambio").text ("La máquina esta indefinida");
     } else {
         var Eetiquetas = true;
         for (index = 0; index < pda.estados.length; index++) {
             if (pda.estados[index].text == "") {
-                document.getElementById("cambio").innerHTML = "Los estados no tienen etiqueta";
+                $("#cambio").text ("Los estados no tienen etiqueta");
                 Eetiquetas = false;
                 break;
             }
@@ -44,7 +36,7 @@ function Validacion(pda) {
             for (index = 0; index < pda.estados.length - 1; index++) {
                 for (index2 = index + 1; index2 < pda.estados.length; index2++) {
                     if (pda.estados[index].text == pda.estados[index2].text) {
-                        document.getElementById("cambio").innerHTML = "Los estados tiene etiquetas similares";
+                        $("#cambio").text ("Los estados tiene etiquetas similares"); ;
                         differ = false;
                         break;
                     }
@@ -52,18 +44,15 @@ function Validacion(pda) {
                 if (!differ)
                     break;
             }
-
             if (differ) {
                 if (pda.transition_table.length == 1) {
-                    document.getElementById("cambio").innerHTML = "No existen transiciones";
+                    $("#cambio").text ("No existen transiciones");
                 } else if (pda.alphabet.length == 0) {
-                    document.getElementById("cambio").innerHTML = "Las transiciones deben tener la forma \'input,pop->push\' para que haya un alfabeto valido";
-                } else if (pda.alphabetStack.length == 0) {
-                    document.getElementById("cambio").innerHTML = "Las transiciones deben tener la forma \'input,pop->push\' para que haya un alfabeto valido";
+                    $("#cambio").text ("Las transiciones deben tener la forma \'input,pop->push\' para que haya un alfabeto valido");
                 } else if (pda.estado_inicial == null) {
-                    document.getElementById("cambio").innerHTML = "Debe existir un estado incial";
+                    $("#cambio").text ("Debe existir un estado incial");
                 } else if (pda.estados_finales.length == 0) {
-                    document.getElementById("cambio").innerHTML = "Debe tener un estado final";
+                    $("#cambio").text ("Debe tener un estado final");
                 } else {
                     return true;
                 }
@@ -77,7 +66,10 @@ function PDA(nodes, links) {
     this.estados = nodes.slice();
     this.conecciones = links.slice();
     this.estados_finales = [];
-    this.estado_inicial = this.getInicial().node;
+    if (this.getInicial() != null) {
+        this.estado_inicial = this.getInicial().node;
+    }
+
 
     for (var i = 0; i < this.estados.length; i++) {
         if (this.estados[i].isAcceptState) {
@@ -86,20 +78,13 @@ function PDA(nodes, links) {
     }
 
     this.transition_table = this.Tabla_Conecciones();
-    console.log(this.transition_tables);
     this.alphabet = this.defineAlphabet();
     this.alphabetStack = this.D_alfabeto();
     this.posiblePaths = [];
     this.waitTime = 0;
     this.stack = new Array();
-    this.print();
 }
 
-PDA.prototype.Color_rever = function() {
-    for (var i = 0; i < this.estados.length; i++) {
-        this.estados[i].animate("white", 30);
-    }
-}
 
 PDA.prototype.defineAlphabet = function() {
     var alphabet = [];
@@ -168,61 +153,6 @@ PDA.prototype.D_alfabeto = function() {
     return alphabetStack;
 };
 
-
-
-PDA.prototype.print = function() {
-    var stateTexts = [];
-    var finalStatesTexts = [];
-    for (var i = 0; i < this.estados.length; i++) {
-        stateTexts.push(this.estados[i].text);
-    }
-    for (var i = 0; i < this.estados_finales.length; i++) {
-        finalStatesTexts.push(this.estados_finales[i].text);
-    }
-    this.alphabet.splice(this.alphabet.indexOf("E"), 1);
-    $(".estados").text(stateTexts.toString());
-    $(".alphabet").text(this.alphabet.toString());
-    $(".stack").text(this.alphabetStack.toString());
-    try {
-        $(".estado_inicial").text(this.estado_inicial.text);
-    } catch (err) {};
-    $(".estados_finales").text(finalStatesTexts.toString());
-    this.printTabla();
-};
-
-PDA.prototype.printTabla = function() {
-    var transition_table_text = "Transition table\n";
-    var newRow, newColumn;
-    $(".conecciones tbody").empty();
-    $(".conecciones tbody").append('<tr><th>Estado Actual</th><th>Símbolo</th><th>Pop</th><th>Push</th><th>Siguiente Estado</th></tr>');
-    for (var index = 0; index < this.transition_table.length; index++) {
-        for (var row = 0; row < this.transition_table[index].length; row++) {
-            if (index !== 0)
-                newRow = document.createElement("tr");
-
-            transition_table_text += "[";
-            for (var column = 0; column < this.transition_table[index][row].length; column++) {
-
-                transition_table_text += "" + this.transition_table[index][row][column];
-                if (index !== 0) {
-                    newColumn = document.createElement("td");
-
-                    newColumn.textContent = this.transition_table[index][row][column];
-                    newRow.appendChild(newColumn);
-                }
-                if (column != this.transition_table[index][row].length - 1)
-                    transition_table_text += "\t";
-            }
-            if (newRow) {
-                $(".conecciones tbody").append(newRow);
-            }
-            transition_table_text += "]\n";
-        }
-    }
-
-
-};
-
 PDA.prototype.Camino = function(path, fromNode) {
     for (var j = 0; j < this.conecciones.length; j++) {
         var transitionFrom, transitionTo, isAcceptState;
@@ -275,10 +205,12 @@ PDA.prototype.Camino = function(path, fromNode) {
 
 }
 
+function Palindrom(str) {
+    return str == str.split('').reverse().join('');
+}
+
 PDA.prototype.evaluarCadena = function(input, pathTransitions, index) {
     $("#stack-row").empty();
-    $("#input_animation .processed").text("");
-    $("#input_animation .unprocessed").text(document.getElementById('input_textPDA').value);
     var temp = this.estado_inicial;
     var nodePath = [];
     var transitionPath = [];
@@ -471,7 +403,7 @@ PDA.prototype.evaluarCadena = function(input, pathTransitions, index) {
     };
     var evaluate = function(input, path, time, index, that) {
         setTimeout(function() {
-            that.evaluateString(input, path, index);
+            that.evaluarCadena(input, path, index);
         }, time)
     }
 
@@ -517,10 +449,10 @@ PDA.prototype.evaluarCadena = function(input, pathTransitions, index) {
     }
     nodePath.push(temp);
     if (temp.isAcceptState) {
-        document.getElementById("cambio").innerHTML = "La Cadena es aceptada.";
+        $("#cambio").text ("La Cadena es aceptada.");
         document.getElementById("cambio").style.color = "green";
     } else {
-        document.getElementById("cambio").innerHTML = "La Cadena es rechazada.";
+        $("#cambio").text ("La Cadena es rechazada.");
     }
 }
 
@@ -540,7 +472,7 @@ PDA.prototype.Tabla_Conecciones = function() {
             else if (current_transition instanceof SelfLink)
                 new_transition = this.getConecciones(current_transition.text, current_transition.node.text, current_transition.node.text);
 
-            if (new_transition.length > 1) { //Cuando las transiciones estan separadas por punto y coma que las guarde por separado igual que las demás....
+            if (new_transition.length > 1) {
                 for (var indexnew = 0; indexnew < new_transition.length; indexnew++) {
                     var new_transitiondivide = this.dividirConecciones(new_transition[indexnew]);
                     transition_table.push(new_transitiondivide);
@@ -578,23 +510,3 @@ PDA.prototype.getInicial = function() {
 
     return null;
 };
-
-function Prueba() {
-    nodes = [];
-    links = [];
-    draw();
-    restoreBackup('{"nodes":[{"x":77,"y":293,"text":"q0","isAcceptState":true},{"x":400,"y":294,"text":"q2","isAcceptState":false},' +
-        '{"x":316,"y":154,"text":"q3","isAcceptState":false},{"x":311,"y":480,"text":"q5","isAcceptState":false}],'+
-      '"links":[{"type":"StartLink","node":0,"text":"","deltaX":-66,"deltaY":0},'+
-      '{"type":"Link","nodeA":0,"nodeB":1,"text":"E,E->$","lineAngleAdjust":0,"parallelPart":0.5,"perpendicularPart":0},'+
-      '{"type":"SelfLink","node":3,"text":"1,E->*","anchorAngle":1.892546881191539},'+
-      '{"type":"SelfLink","node":2,"text":"0,E->*","anchorAngle":1.5707963267948966},'+
-      '{"type":"SelfLink","node":3,"text":"0,*->E","anchorAngle":-0.5},'+
-      '{"type":"SelfLink","node":2,"text":"1,*->E","anchorAngle":-1.5707963267948966},'+
-      '{"type":"Link","nodeA":2,"nodeB":0,"text":"E,$->E","lineAngleAdjust":0,"parallelPart":0.5,"perpendicularPart":0},'+
-      '{"type":"Link","nodeA":3,"nodeB":0,"text":"E,$->E","lineAngleAdjust":0,"parallelPart":0.5,"perpendicularPart":0},'+
-      '{"type":"Link","nodeA":1,"nodeB":2,"text":"0,E->*","lineAngleAdjust":0,"parallelPart":0.5,"perpendicularPart":0},'+
-      '{"type":"Link","nodeA":1,"nodeB":3,"text":"1,E->*","lineAngleAdjust":0,"parallelPart":0.5,"perpendicularPart":0}'+
-      ']}');
-
-}
