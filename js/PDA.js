@@ -3,12 +3,6 @@ function ProbarCadena(field) {
     console.log("Entre");
     var pda = new PDA(nodes, links);
     pda.Color_rever();
-    if (Validacion(pda)) {
-        canvas.onmousedown = function(e) {};
-        canvas.ondblclick = function(e) {};
-        canvas.onmousemove = function(e) {};
-        canvas.onmouseup = function(e) {};
-    }
     pda.posiblePaths = [];
     var accepted = false;
     var allPaths = pda.Camino({
@@ -92,7 +86,6 @@ function PDA(nodes, links) {
     this.posiblePaths = [];
     this.waitTime = 0;
     this.stack = new Array();
-    this.print();
 }
 
 PDA.prototype.Color_rever = function() {
@@ -168,61 +161,6 @@ PDA.prototype.D_alfabeto = function() {
     return alphabetStack;
 };
 
-
-
-PDA.prototype.print = function() {
-    var stateTexts = [];
-    var finalStatesTexts = [];
-    for (var i = 0; i < this.estados.length; i++) {
-        stateTexts.push(this.estados[i].text);
-    }
-    for (var i = 0; i < this.estados_finales.length; i++) {
-        finalStatesTexts.push(this.estados_finales[i].text);
-    }
-    this.alphabet.splice(this.alphabet.indexOf("E"), 1);
-    $(".estados").text(stateTexts.toString());
-    $(".alphabet").text(this.alphabet.toString());
-    $(".stack").text(this.alphabetStack.toString());
-    try {
-        $(".estado_inicial").text(this.estado_inicial.text);
-    } catch (err) {};
-    $(".estados_finales").text(finalStatesTexts.toString());
-    this.printTabla();
-};
-
-PDA.prototype.printTabla = function() {
-    var transition_table_text = "Transition table\n";
-    var newRow, newColumn;
-    $(".conecciones tbody").empty();
-    $(".conecciones tbody").append('<tr><th>Estado Actual</th><th>Símbolo</th><th>Pop</th><th>Push</th><th>Siguiente Estado</th></tr>');
-    for (var index = 0; index < this.transition_table.length; index++) {
-        for (var row = 0; row < this.transition_table[index].length; row++) {
-            if (index !== 0)
-                newRow = document.createElement("tr");
-
-            transition_table_text += "[";
-            for (var column = 0; column < this.transition_table[index][row].length; column++) {
-
-                transition_table_text += "" + this.transition_table[index][row][column];
-                if (index !== 0) {
-                    newColumn = document.createElement("td");
-
-                    newColumn.textContent = this.transition_table[index][row][column];
-                    newRow.appendChild(newColumn);
-                }
-                if (column != this.transition_table[index][row].length - 1)
-                    transition_table_text += "\t";
-            }
-            if (newRow) {
-                $(".conecciones tbody").append(newRow);
-            }
-            transition_table_text += "]\n";
-        }
-    }
-
-
-};
-
 PDA.prototype.Camino = function(path, fromNode) {
     for (var j = 0; j < this.conecciones.length; j++) {
         var transitionFrom, transitionTo, isAcceptState;
@@ -275,10 +213,15 @@ PDA.prototype.Camino = function(path, fromNode) {
 
 }
 
+function checkPalindrom(str) {
+    return str == str.split('').reverse().join('');
+}
+
+
+
+
 PDA.prototype.evaluarCadena = function(input, pathTransitions, index) {
     $("#stack-row").empty();
-    $("#input_animation .processed").text("");
-    $("#input_animation .unprocessed").text(document.getElementById('input_textPDA').value);
     var temp = this.estado_inicial;
     var nodePath = [];
     var transitionPath = [];
@@ -540,7 +483,7 @@ PDA.prototype.Tabla_Conecciones = function() {
             else if (current_transition instanceof SelfLink)
                 new_transition = this.getConecciones(current_transition.text, current_transition.node.text, current_transition.node.text);
 
-            if (new_transition.length > 1) { //Cuando las transiciones estan separadas por punto y coma que las guarde por separado igual que las demás....
+            if (new_transition.length > 1) {
                 for (var indexnew = 0; indexnew < new_transition.length; indexnew++) {
                     var new_transitiondivide = this.dividirConecciones(new_transition[indexnew]);
                     transition_table.push(new_transitiondivide);
