@@ -24,7 +24,7 @@
 
     <!-- Custom Fonts -->
     <link href="font-awesome/css/font-awesome.min.css" rel="stylesheet" type="text/css">
-
+    <link rel="stylesheet" type="text/css" href="sweetalert-master/dist/sweetalert.css">
     <link rel="stylesheet" type="text/css" href="css/mainComponents.css">
 
 </head>
@@ -45,38 +45,35 @@
                 <!-- Sidebar Menu Items - These collapse to the responsive navigation menu on small screens -->
                 <div class="collapse navbar-collapse navbar-ex1-collapse">
                     <ul class="nav navbar-nav side-nav">
-                        <li  class="active">
+                        <li >
                             <a data-toggle="collapse" data-target="#demo"><i class="fa fa-fw fa-dashboard"></i> Lenguajes Regulares <i class="fa fa-fw fa-caret-down"></i></a>
                             <ul id="demo" class="collapse">
-                                <li class="active">
+                                <li >
                                     <a href="index.html">DFA / NFA</a>
                                 </li>
                                 <li>
-                                    <a href="#">Regex</a>
-                                </li>
-                                <li>
-                                    <a href="#">Convertir</a>
+                                    <a href="regex.html">Regex</a>
                                 </li>
                             </ul>
                         </li>
 
                         <li>
-                            <a data-toggle="collapse" data-target="#demo"><i class="fa fa-fw fa-dashboard"></i> Lenguajes de Contexto <i class="fa fa-fw fa-caret-down"></i></a>
-                            <ul id="demo" class="collapse">
+                            <a data-toggle="collapse" data-target="#demo2"><i class="fa fa-fw fa-dashboard"></i> Lenguajes de Contexto <i class="fa fa-fw fa-caret-down"></i></a>
+                            <ul id="demo2" class="collapse">
                                 <li>
                                     <a href="PDA.html">PDA</a>
                                 </li>
                                 <li>
-                                    <a href="#">CFG</a>
+                                    <a href="cfg.html">CFG</a>
                                 </li>
                                 <li>
-                                    <a href="#">CFG -> CNF</a>
+                                    <a href="cnf.html">CFG -> CNF</a>
                                 </li>
                             </ul>
                         </li>
 
-                        <li>
-                            <a href="#"><i class="fa fa-fw fa-dashboard"></i>Lenguajes Decidibles</a>
+                        <li  class="active">
+                            <a href="tm.html" ><i class="fa fa-fw fa-dashboard"></i>Lenguajes Decidibles</a>
                         </li>
 
                     </ul>
@@ -87,8 +84,8 @@
             <div id="page-wrapper">
             <div class = "row" id = "input" >
                         <div class="col-md-12 center">
-                            <input type= "text" id = "input_text"></input>
-                            <button onclick="disableCanvas()" >click</button>
+                            <input type= "text" id = "cadena"></input>
+                            <button onclick="start_probar_cadena()" >click</button>
                             <button onclick="save()" >save</button>
                             <input type= "text" id = "load_inpupt"></input>
                             <button onclick="load()" >load</button>
@@ -118,13 +115,16 @@
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.2/jquery.min.js"></script>
     <script type="text/javascript" src="src/elements/Link.js"></script>
 
-    <script type="text/javascript" src="js/tm.js"></script>
+    
     <script type="text/javascript" src="src/elements/Node.js"></script>
     <script type="text/javascript" src="src/elements/SelfLink.js"></script>
     <script type="text/javascript" src="src/elements/StartLink.js"></script>
     <script type="text/javascript" src="src/elements/TemporaryLink.js"></script>
     <script type="text/javascript" src="src/elements/Pointer.js"></script>
     <script type="text/javascript" src="src/designer/fmsDesigner.js"></script>
+    <script src="sweetalert-master/dist/sweetalert.min.js"></script>
+    <script type="text/javascript" src="js/tm.js"></script>
+    
 </body>
 
 </html>

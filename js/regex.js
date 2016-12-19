@@ -8,19 +8,33 @@ function prueba_cadena(){
 	var cadena = document.getElementById('cadena').value;
 	regex = new RegExp(expresion, 'i');
 	regex_exec = regex.exec(cadena)
-	//console.log(this.nodes)
-	//console.log(this.links)
-	console.log(localStorage['fsm'])
 	convertir(expresion);
 	if(regex_exec != undefined){
 
-		if(regex_exec[0] === regex_exec.input)
-			console.log("EL REGEX ACEPTA LA CADENA")
-		else
-			console.log("EL REGEX NO ACEPTA LA CADENA")
+		if(regex_exec[0] === regex_exec.input){
+			swal({
+	          title: "Aceptada!",
+	          text: "EL REGEX ACEPTA LA CADENA",
+	          type: "success",
+	          confirmButtonText: "Ok"
+	        });
+		}else{
+			swal({
+	          title: "Rechazada!",
+	          text: "EL REGEX NO ACEPTA LA CADENA",
+	          type: "error",
+	          confirmButtonText: "Ok"
+	        });
+		}
 
-	}else
-	console.log("EL REGEX NO ACEPTA LA CADENA")
+	}else{
+		swal({
+          title: "Rechazada!",
+          text: "EL REGEX NO ACEPTA LA CADENA",
+          type: "error",
+          confirmButtonText: "Ok"
+        });
+	}
 }
 
 function convertir(expresion){
@@ -28,7 +42,6 @@ function convertir(expresion){
 	this.links = [];
 	espacio_entre_nodos = 150, x_position = espacio_entre_nodos, y_position = espacio_entre_nodos;
 	nombres_aceptables_position_for_nfa = 0;
-	//var unrepeated_input = clean_input.split("").filter(function(x, n, s) { return s.indexOf(x) == n }).join("")
 	var contador = 0
 	var individual_nfas = [];
 	var backup = {
@@ -92,9 +105,6 @@ function convertir(expresion){
 		}
 
 	}	
-	// console.log(expresion)
-	// console.log(individual_nfas)
-	//return -1;
 	expresion = expresion.replaceAll("(","")
 	var parentesis_found_in_position = -1;// en esta posicion debemos volver a reiniciar i, este valor es para que
 										  // una vez se haya resuelto todo dentro del parentesis este tome lo que 
@@ -103,7 +113,6 @@ function convertir(expresion){
   	var prioridad = 0; //0 = estrella, 1 = mas(+) , 2 =  union, 3 = concatenacion, 4 = parentesis
 
   	for (var i = 0; i < expresion.length; i++) {//primero hacemos todas las operaciones estrella
-		console.log("exp: ",expresion,"i: ", i,"prio: ", prioridad, "#nfa: ", individual_nfas.length)
   		if(nombres_aceptables.contains(expresion[i])){// i es aceptable
 			if(i +1 < expresion.length){
 				var node_position1 = getNodePosition(individual_nfas,expresion[i]);
@@ -128,7 +137,6 @@ function convertir(expresion){
 
 				}else if(expresion[i+1] === "|" && prioridad ===1){
 					var node_position2 = getNodePosition(individual_nfas,expresion[i+2]);
-					console.log(node_position1, node_position2)
 					var unidos = union(individual_nfas[node_position1],individual_nfas[node_position2])
 					expresion = expresion.remove(i+1).remove(i+1)
 					individual_nfas.splice(i,2,unidos) 
@@ -142,14 +150,11 @@ function convertir(expresion){
 						
 						var node_position2 = getNodePosition(individual_nfas,expresion[i+1]);
 						
-						var concatenados = concatenacion(individual_nfas[node_position1], 
-									  individual_nfas[node_position2])
-						//return -1;
+						var concatenados = concatenacion(individual_nfas[node_position1], individual_nfas[node_position2])
 						expresion = expresion.remove(i+1)
 
 						individual_nfas.splice(i,2,concatenados) 
 						i--;
-					//i--;
 
 
 				}	
@@ -170,25 +175,17 @@ function convertir(expresion){
 		'nodes': [],
 		'links': [],
 	};	
-	console.log(individual_nfas)
 	for (var i = 0; i < individual_nfas.length; i++) {
 		for (var k = 0; k < individual_nfas[i].nodes.length; k++) {
 			if(!is_node_or_link_contained(backup_done.nodes,individual_nfas[i].nodes[k]))
 				backup_done.nodes.push(individual_nfas[i].nodes[k])
 		}
 		for (var j = 0; j < individual_nfas[i].links.length; j++) {
-			// if(!is_node_or_link_contained(backup_done.links,individual_nfas[i].links[j]) 
-			// 		||(individual_nfas[i].links[j] instanceof StartLink) || individual_nfas[i].links[j] ===epsilon)
 				backup_done.links.push(individual_nfas[i].links[j])
 		}
 	}
-	// console.log(backup_done)
-	// console.log(expresion)
-	//restoreBackup(JSON.stringify(backup))
 	this.nodes = backup_done.nodes;
 	this.links = backup_done.links;
-	// console.log(this.nodes)
-	// console.log(this.links)
 	draw();
 
 
@@ -200,12 +197,8 @@ function union(left,right){
 		'links': []
 	}
 	new_nfa.text = left.text;
-	//console.log(left,right)
-	new_nfa.nodes = mergeArrays(left.nodes,
-		right.nodes)
-	new_nfa.links = mergeArrays(left.links,
-		right.links)
-	//console.log(new_nfa)
+	new_nfa.nodes = mergeArrays(left.nodes,right.nodes)
+	new_nfa.links = mergeArrays(left.links,right.links)
 	// se creara un nuevo estado el cual sera el nuevo estado inicial y se unira a los estados iniciales previos
 
 	var left_start_state, right_start_state, new_start_state;
@@ -228,7 +221,6 @@ function union(left,right){
 		if(new_nfa.links[i] instanceof StartLink){//eliminaremos los links iniciales
 			//debido a que al hacer merge de los arrays los datos del left quedan primero, sabemos que left_start_state
 			// se encontrara primero
-			//console.log(new_nfa.links[i])
 			if(!left_start_state){
 				left_start_state = new_nfa.links[i].node;
 				new_nfa.links.splice(i,1)
@@ -260,14 +252,7 @@ function union(left,right){
 	new_nfa.links.push(left_link)
 	new_nfa.links.push(right_link)
 
-	console.log(new_nfa)/*
-	this.nodes = new_nfa.nodes;
-	this.links = new_nfa.links;
-	// console.log(this.nodes)
-	// console.log(this.links)
-	draw();*/
 	return new_nfa;
-	//console.log(left_start_state,right_start_state)
 
 }
 
@@ -317,21 +302,13 @@ function estrella_o_mas(nfa,tipo){//
 	for (var i = 0; i < nfa.nodes.length; i++) {// obtenemos nodos finales
 		if(nfa.nodes[i].isAcceptState){//ahora debemos crear una transicion epsilon entre el estado final y el estado inicial
 			var link;
-			/*if(nfa.nodes[i].text === start_state.text){// hay que hacer un self link
-                link = new SelfLink(start_state);
-                link.anchorAngle = -2.5;//con -2.5 aparece en la parte superior izquierda del nodo donde no estorba
-			}else{*/
-				link = new Link(nfa.nodes[i], nfa.nodes[start_state_position]);
-                link.perpendicularPart = 0;
-                link.text = epsilon;
-                var anchorPoint = calcularAnchorPoint(nfa, i,start_state_position);
-                // console.log(nfa.nodes[i], start_state_position)
-                // console.log("=" , i,get_node_or_link_position(nfa.nodes,start_state), nfa.nodes[get_node_or_link_position(nfa.nodes,start_state)])
-                link.setAnchorPoint(anchorPoint.x,anchorPoint.y);
-                link.parallelPart = 0.5;
-			//}
+			link = new Link(nfa.nodes[i], nfa.nodes[start_state_position]);
+            link.perpendicularPart = 0;
+            link.text = epsilon;
+            var anchorPoint = calcularAnchorPoint(nfa, i,start_state_position);
+            link.setAnchorPoint(anchorPoint.x,anchorPoint.y);
+            link.parallelPart = 0.5;
 			nfa.links.push(link)
-            //console.log(link)
 		}
 	}
 
@@ -358,11 +335,8 @@ function concatenacion(left,right){
 
 	}
 	//nombremos el nuevo dfa con la letra inicial de el nodo inicial de el nfa left
-	/*new_nfa.text = alfabeto_aceptable[nombres_aceptables_position_for_nfa]
-	nombres_aceptables_position_for_nfa++;*/
 	for (var i = 0; i < left.links.length; i++) {
 		if(left.links[i] instanceof StartLink){
-			console.log("entro a left link start")
 			new_nfa.text = left.links[i].node.text;
 		}
 	}
@@ -374,11 +348,9 @@ function concatenacion(left,right){
 			for (var k = 0; k < end_nodes.length; k++) {
                 link = new Link(end_nodes[k], right.links[i].node);
                 link.perpendicularPart = 0;
-                link.text = epsilon;
-                console.log(new_nfa)                
-                // console.log("node: " , end_nodes[k],"posicion", get_node_or_link_position(new_nfa.nodes,end_nodes[k]))
+                link.text = epsilon;              
 			    var anchorPoint = calcularAnchorPoint(new_nfa, get_node_or_link_position(new_nfa.nodes,end_nodes[k])
-			    										,get_node_or_link_position(new_nfa.nodes,right.links[i].node));
+			    	,get_node_or_link_position(new_nfa.nodes,right.links[i].node));
 			    link.setAnchorPoint(anchorPoint.x,anchorPoint.y);
 			    link.parallelPart = 0.5;
 			    right.links.push(link)			    
@@ -452,8 +424,6 @@ function calcularAnchorPoint(backup,i,k){
                 anchorPointY = (nodeBY - nodeAY)/2 + nodeAY -10;
 
             }
-            /*anchorPointX = (nodeAX - nodeBX)/2 + nodeBX
-            anchorPointY = backup.nodes[i].y - 30*/
         }
     }
     var point = {
@@ -486,7 +456,6 @@ function get_node_or_link_position(node_or_link_Array, node_or_link){
 }
 
 function getNodePosition(array,value){// recibe el arreglo de todos los dfa individuales
-	//console.log(array)
 	for (var i = 0; i < array.length; i++) {
 		for (var j = 0; j < array[i].nodes.length; j++) {
 			if(array[i].nodes[j].text.contains(value)){
@@ -536,71 +505,3 @@ String.prototype.replaceAll = function(search, replacement) {
 String.prototype.replaceChar = function(position, replacement) {
     return this.slice(0, position) +replacement+ this.slice(position+1, this.length)
 };
-
-
-
-
-
-
-
-
-
-
-// for (var i = 0; i < expresion.length; i++) {
-	// 	console.log(expresion,i)
-	// 	if(alfabeto_aceptable.contains(expresion[i])){// es una letra/numero		
-	// 		if(i +1 < expresion.length){// que no se salga del tamano max	
-	// 			var node_position1 = getNodePosition(individual_nfas,expresion[i]);
-	// 			if(expresion[i+1] === "*"){// estrella
-	// 				//console.log("entro")
-	// 				var nfa_despues_de_estrella = estrella(individual_nfas[node_position1]);	
-	// 				// console.log(nfa_despues_de_estrella)				
-	// 				expresion = expresion.remove(i+1)
-	// 				parentesis_found_in_position--;
-	// 				individual_nfas.splice(i,1,nfa_despues_de_estrella) 
-	// 				//console.log(JSON.stringify(individual_nfas))
-
-	// 			}else if(expresion[i+1] === "|"){
-					
-	// 			}else if(alfabeto_aceptable.contains(expresion[i+1])){//concatenacion
-	// 				//primero vemos si nuestro objetivo de concatenacion no tiene ninguna operacion pendiente
-	// 				//por ejemplo ab* primero deberiamos hacer b* antes de proceder con ab
-	// 				console.log(termino_union_y_estrella, i, parentesis_found_in_position)
-	// 				if(termino_union_y_estrella && i<= parentesis_found_in_position){//se puede concatenar
-	// 					console.log("entro2")
-	// 					var node_position2 = getNodePosition(individual_nfas,expresion[i+1]);
-						
-	// 					//console.log(node_position1, node_position2)
-	// 					var concatenados = concatenacion(individual_nfas[node_position1], 
-	// 								  individual_nfas[node_position2])
-	// 					//console.log(concatenados)
-	// 					//console.log(individual_nfas)
-	// 					//return -1;
-	// 					expresion = expresion.remove(i+1)
-
-	// 					individual_nfas.splice(i,2,concatenados) 
-	// 					i--;
-	// 				}else if(termino_union_y_estrella){						
-	// 					termino_union_y_estrella = false;
-	// 					i = -1;
-	// 				}
-
-	// 				//i--;
-
-
-	// 			}
-
-	// 			// i = -1;// no 0 porque al volver a correr el ciclo le suma 1
-	// 		}
-	// 	}else if(expresion[i] === ")"){// si se encuentra volvemos al inicio 
-	// 		expresion = expresion.remove(i)
-	// 		console.log("parentesis_found_in_positions" ,i)
-	// 		parentesis_found_in_position = i-1;//ya que eliminamos el parentesis reducimos 1		
-	// 		//console.log(i,expresion[i])
-	// 		i = -1;
-	// 	}
-	// 	if(i === expresion.length -1 && expresion.length >1){
-	// 		termino_union_y_estrella  = true;
-	// 		i = -1;
-	// 	}
-	// }
