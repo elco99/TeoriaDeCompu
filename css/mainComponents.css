@@ -41,15 +41,13 @@ body {
     padding: 0;
     margin: auto;
     display: block;
-    /*width: 800px;
-    height: 600px;*/
     position: relative;
     top: 10px;
     bottom: 0;
     left: 0px;
     right: 0;
     border: 2px solid #ffffff;
-    background: #0B1907;
+    background: #000000;
 }
 
 
