@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset=utf-8 />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="">
+    <meta name="author" content="">
+    <meta name="description" content="A finite state machine chart with editable and interactive features." />
+    <!-- /* Copyright 1998-2016 by Northwoods Software Corporation. */ -->
+    <meta charset="UTF-8">
+
+    <title>Machines!</title>
+
+    <!-- Bootstrap Core CSS -->
+    <link href="css/bootstrap.min.css" rel="stylesheet">
+
+    <!-- Custom CSS -->
+    <link href="css/sb-admin.css" rel="stylesheet">
+
+    <!-- Morris Charts CSS -->
+    <link href="css/plugins/morris.css" rel="stylesheet">
+    <link href="css/grammar.css" rel="stylesheet">
+    <link href="css/grammar_mod.css" rel="stylesheet">
+
+    <!-- Custom Fonts -->
+    <link href="font-awesome/css/font-awesome.min.css" rel="stylesheet" type="text/css">
+
+    <link rel="stylesheet" type="text/css" href="css/mainComponents.css">
+
+</head>
+
+<body>
+    <div id="wrapper">
+        <nav class="navbar navbar-inverse navbar-fixed-top" role="navigation">
+            <!-- Brand and toggle get grouped for better mobile display -->
+            <div class="navbar-header">
+                <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-ex1-collapse">
+                        <span class="sr-only">Toggle navigation</span>
+                        <span class="icon-bar"></span>
+                        <span class="icon-bar"></span>
+                        <span class="icon-bar"></span>
+                    </button>
+                <a class="navbar-brand" href="index.html">Proyecto</a>
+            </div>
+            <!-- Sidebar Menu Items - These collapse to the responsive navigation menu on small screens -->
+            <div class="collapse navbar-collapse navbar-ex1-collapse">
+                <ul class="nav navbar-nav side-nav">
+                    <li>
+                        <a data-toggle="collapse" data-target="#demo"><i class="fa fa-fw fa-dashboard"></i> Lenguajes Regulares <i class="fa fa-fw fa-caret-down"></i></a>
+                        <ul id="demo" class="collapse">
+                            <li>
+                                <a href="index.html">DFA / NFA</a>
+                            </li>
+                            <li>
+                                <a href="regex.html">Regex</a>
+                            </li>
+                            <li>
+                                <a href="#">Convertir</a>
+                            </li>
+                        </ul>
+                    </li>
+
+                    <li class="active">
+                        <a data-toggle="collapse" data-target="#demo2"><i class="fa fa-fw fa-dashboard"></i> Lenguajes de Contexto <i class="fa fa-fw fa-caret-down"></i></a>
+                        <ul id="demo2" class="collapse">
+                            <li>
+                                <a href="PDA.html">PDA</a>
+                            </li>
+                            <li class="active">
+                                <a href="cfg.html">CFG</a>
+                            </li>
+                            <li>
+                                <a href="cnf.html">CFG -> CNF</a>
+                            </li>
+                        </ul>
+                    </li>
+
+                    <li>
+                        <a href="tm.html"><i class="fa fa-fw fa-dashboard"></i>Lenguajes Decidibles</a>
+                    </li>
+
+                </ul>
+            </div>
+            <!-- /.navbar-collapse -->
+        </nav>
+        <div class="PDA">
+            <div class="col-md-12 col-md-offset-1 ">
+                <div class="row">
+                    <h1>PDA</h1>
+                    <input id="input_textPDA" type="text" name="texto">
+                    <button type="button" onclick="ProbarCadena(input_textPDA)">Procesar Cadena</button>
+                </div>
+                <div class="row">
+                    <div class="col-md-2">
+                        <h4 class="StackTitle">Stack:</h4>
+                    </div>
+                    <div class="col-md-4">
+                        <p id="cambio" class="Message"></p>
+                    </div>
+                </div>
+                <div id="stack">
+                    <table>
+                        <tr id="stack-row"></tr>
+                    </table>
+                </div>
+            </div>
+            <div class="col-md-9 center">
+                <div id="pda_canvas">
+                    <canvas id="canvas" width="800" height="600">
+                      <span class="error">Your browser does not support<br>the HTML5 &lt;canvas&gt; element</span>
+                  </canvas>
+                </div>
+                <div id="input_animation">
+                    <div style='text-decoration:line-through;' class="processed"></div>
+                    <div class="unprocessed"></div>
+                </div>
+            </div>
+        </div>
+        <!--END PAGE WRAPPER -->
+    </div>
+    <script src="js/jquery.js"></script>
+    <script src="js/bootstrap.min.js"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.2/jquery.min.js"></script>
+    <script type="text/javascript" src="src/elements/Link.js"></script>
+    <script type="text/javascript" src="js/PDA.js"></script>
+    <script type="text/javascript" src="src/elements/Node.js"></script>
+    <script type="text/javascript" src="src/elements/SelfLink.js"></script>
+    <script type="text/javascript" src="src/elements/StartLink.js"></script>
+    <script type="text/javascript" src="src/elements/TemporaryLink.js"></script>
+    <script type="text/javascript" src="src/elements/Pointer.js"></script>
+    <script type="text/javascript" src="src/designer/fmsDesigner.js"></script>
+</body>
+
+</html>
