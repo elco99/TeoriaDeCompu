@@ -24,7 +24,7 @@
 
     <!-- Custom Fonts -->
     <link href="font-awesome/css/font-awesome.min.css" rel="stylesheet" type="text/css">
-
+    <link rel="stylesheet" type="text/css" href="sweetalert-master/dist/sweetalert.css">
     <link rel="stylesheet" type="text/css" href="css/mainComponents.css">
 
 </head>
@@ -53,9 +53,6 @@
                                 </li>
                                 <li>
                                     <a href="regex.html">Regex</a>
-                                </li>
-                                <li>
-                                    <a href="#">Convertir</a>
                                 </li>
                             </ul>
                         </li>
@@ -88,8 +85,9 @@
             <div class = "row" id = "input" >
                         <div class="col-md-12 center">
                             <input type= "text" id = "input_chain"></input>
-                            <button onclick="prueba_cadena()" >click</button>
+                            <button onclick="prueba_cadena()" >Procesar Cadena</button>
                             <button onclick="convert_nfa_to_dfa()" >nfa_to_dfa</button>
+                            <button onclick="convert_dfa_to_nfa()" >dfa_to_nfa</button>
                             <button onclick="save()" >save</button>
                             <input type= "text" id = "load_inpupt"></input>
                             <button onclick="load()" >load</button>
@@ -125,6 +123,7 @@
     <script type="text/javascript" src="src/elements/StartLink.js"></script>
     <script type="text/javascript" src="src/elements/TemporaryLink.js"></script>
     <script type="text/javascript" src="src/elements/Pointer.js"></script>
+    <script src="sweetalert-master/dist/sweetalert.min.js"></script>
     <script type="text/javascript" src="src/designer/fmsDesigner.js"></script>
 </body>
 
