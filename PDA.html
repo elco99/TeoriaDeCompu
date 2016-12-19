@@ -89,15 +89,15 @@
             <div class="col-md-12 col-md-offset-1 ">
                 <div class="row">
                     <h1>PDA</h1>
-                    <input id="input_textPDA" type="text">
-                    <button type="button" onclick="Prueba(); TryCadena();">Procesar Cadena</button>
+                    <input id="input_textPDA" type="text" name="texto">
+                    <button type="button" onclick="Prueba(); ProbarCadena(input_textPDA);">Procesar Cadena</button>
                 </div>
                 <div class="row">
                     <div class="col-md-2">
                         <h4 class="StackTitle">Stack:</h4>
                     </div>
                     <div class="col-md-4">
-                        <p id="cambio" class="StackTitle"></p>
+                        <p id="cambio" class="Message"></p>
                     </div>
                 </div>
                 <div id="stack">

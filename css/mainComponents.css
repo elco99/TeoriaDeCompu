@@ -1,3 +1,8 @@
+.Message{
+  color: red;
+  margin-top: 10px;stack
+}
+
 .StackTitle{
   color: green;
   margin-top: 10px;stack
@@ -10,7 +15,7 @@
 
 .PDA{
   background-color: white;
-  height: 750px;
+  height: 800px;
   width: 900px;
 
 }
